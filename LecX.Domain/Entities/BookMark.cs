@@ -4,9 +4,9 @@ namespace LecX.Domain.Entities
 {
     public class BookMark
     {
-        public int BookmarkID { get; set; }
-        public string StudentID { get; set; }
-        public int CourseID { get; set; } 
+        public int BookmarkId { get; set; }
+        public string StudentId { get; set; }
+        public int CourseId { get; set; } 
 
         // Navigation properties
         public virtual User Student { get; set; } 

@@ -5,7 +5,7 @@ namespace LecX.Domain.Entities
 {
     public class Course
     {
-        public int CourseID { get; set; }
+        public int CourseId { get; set; }
 
         [MaxLength(255)]
         public string Title { get; set; }
@@ -16,11 +16,11 @@ namespace LecX.Domain.Entities
         [MaxLength(255)]
         public string Description { get; set; }
         public string CoverImagePath { get; set; }
-        public string InstructorID { get; set; }
+        public string InstructorId { get; set; }
 
         public int NumberOfStudents { get; set; } = 0;
         public decimal Price { get; set; }
-        public int CategoryID { get; set; }
+        public int CategoryId { get; set; }
 
         public CourseLevel Level { get; set; }
         public CourseStatus Status { get; set; }
@@ -37,6 +37,7 @@ namespace LecX.Domain.Entities
         public virtual Instructor Instructor { get; set; }
 
         public virtual IEnumerable<Assignment> Assignments { get; set; } = new List<Assignment>();
+        public virtual IEnumerable<Test> Tests { get; set; } = new List<Test>();
         public virtual IEnumerable<BookMark> BookMarks { get; set; } = new List<BookMark>();
         public virtual IEnumerable<Certificate> Certificates { get; set; } = new List<Certificate>();
         public virtual IEnumerable<CourseMaterial> CourseMaterials { get; set; } = new List<CourseMaterial>();

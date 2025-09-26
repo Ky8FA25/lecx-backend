@@ -1,5 +1,5 @@
+using LecX.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 
 namespace LecX.Domain.Entities
 {
@@ -10,7 +10,7 @@ namespace LecX.Domain.Entities
         public string ProfileImagePath { get; set; }
         public string Address { get; set; }
         public DateTime Dob { get; set; }
-        public bool Gender { get; set; }
+        public Gender Gender { get; set; }
         public double? WalletUser { get; set; } = 0.0;
     }
 }

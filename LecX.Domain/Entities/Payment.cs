@@ -4,9 +4,9 @@ namespace LecX.Domain.Entities
 {
     public class Payment
     {
-        public int PaymentID { get; set; } 
-        public int CourseID { get; set; } 
-        public string StudentID { get; set; } 
+        public int PaymentId { get; set; } 
+        public int CourseId { get; set; } 
+        public string StudentId { get; set; } 
         public decimal Amount { get; set; }
 
         public DateTime PaymentDate { get; set; } = DateTime.Now;

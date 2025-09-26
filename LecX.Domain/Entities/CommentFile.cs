@@ -2,8 +2,8 @@
 {
     public class CommentFile
     {
-        public int FileID { get; set; }
-        public int CommentID { get; set; }
+        public int FileId { get; set; }
+        public int CommentId { get; set; }
         public string FileName { get; set; }
         public string FilePath { get; set; }
         public DateTime UploadDate { get; set; } = DateTime.Now;

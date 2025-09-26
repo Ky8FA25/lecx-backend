@@ -2,12 +2,13 @@
 {
     /// <summary>
     /// roles for users in the system
+    /// NOTE: Fixed IDs per requirement: Admin=1, Student=2, Instructor=3
     /// </summary>
     public enum Role
     {
-        Admin,
-        Instructor,
-        Student
+        Admin = 1,
+        Student = 2,
+        Instructor = 3
     }
 
     /// <summary>
@@ -15,18 +16,18 @@
     /// </summary>
     public enum CourseCategory
     {
-        Development,
-        Business,
-        ITAndSoftware,
-        Design,
-        Marketing,
-        PersonalDevelopment,
-        HealthAndFitness,
-        Music,
-        Photography,
-        LanguageLearning,
-        TeachingAndAcademics,
-        Other
+        Development = 0,
+        Business = 1,
+        ITAndSoftware = 2,
+        Design = 3,
+        Marketing = 4,
+        PersonalDevelopment = 5,
+        HealthAndFitness = 6,
+        Music = 7,
+        Photography = 8,
+        LanguageLearning = 9,
+        TeachingAndAcademics = 10,
+        Other = 11
     }
 
     /// <summary>
@@ -34,9 +35,9 @@
     /// </summary>
     public enum CourseLevel
     {
-        Beginner,
-        Intermediate,
-        Advanced
+        Beginner = 0,
+        Intermediate = 1,
+        Advanced = 2
     }
 
     /// <summary>
@@ -44,10 +45,10 @@
     /// </summary>
     public enum PaymentStatus
     {
-        Pending,
-        Completed,
-        Failed,
-        Refunded
+        Pending = 0,
+        Completed = 1,
+        Failed = 2,
+        Refunded = 3
     }
 
     /// <summary>
@@ -55,9 +56,9 @@
     /// </summary>
     public enum CourseStatus
     {
-        Draft,
-        Published,
-        Archived
+        Draft = 0,
+        Published = 1,
+        Archived = 2
     }
 
     /// <summary>
@@ -65,9 +66,9 @@
     /// </summary>
     public enum TestStatus
     {
-        Active,
-        Inactive,
-        Completed
+        Active = 0,
+        Inactive = 1,
+        Completed = 2
     }
 
     /// <summary>
@@ -75,8 +76,8 @@
     /// </summary>
     public enum CertificateStatus
     {
-        Pending,
-        Completed
+        Pending = 0,
+        Completed = 1
     }
 
     /// <summary>
@@ -84,9 +85,44 @@
     /// </summary>
     public enum FileType
     {
-        Image,
-        Video,
-        Document,
-        Other
+        Image = 0,
+        Video = 1,
+        Document = 2,
+        Other = 3
+    }
+
+    public enum NotificationType
+    {
+        Info = 0,
+        Warning = 1,
+        Alert = 2
+    }
+
+    public enum ReportStatus
+    {
+        Pending = 0,
+        Reviewed = 1,
+        Resolved = 2
+    }
+
+    public enum RefundStatus
+    {
+        Pending = 0,
+        Approved = 1,
+        Rejected = 2
+    }
+
+    public enum InstructorConfirmationStatus
+    {
+        Pending = 0,
+        Confirmed = 1,
+        Rejected = 2
+    }
+
+    public enum Gender
+    {
+        Male = 0,
+        Female = 1,
+        Other = 2
     }
 }

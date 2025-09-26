@@ -5,14 +5,14 @@ namespace LecX.Domain.Entities
 {
     public class Test
     {
-        public int TestID { get; set; } // Primary key with auto-increment
+        public int TestId { get; set; } // Primary key with auto-increment
 
         [MaxLength(255)]
         public string Title { get; set; } // Title of the test
 
         [MaxLength(255)]
         public string? Description { get; set; }
-        public int CourseID { get; set; } // Foreign key to Courses
+        public int CourseId { get; set; } // Foreign key to Courses
 
         public DateTime StartTime { get; set; } // Start time of the test
         public TimeSpan? TestTime { get; set; } // The Actual Time for the test
@@ -26,6 +26,6 @@ namespace LecX.Domain.Entities
 
         public virtual Course Course { get; set; }
         public virtual IEnumerable<Question> Questions { get; set; } = new List<Question>();
-        public virtual IEnumerable<Score> Scores { get; set; } = new List<Score>();
+        public virtual IEnumerable<TestScore> TestScores { get; set; } = new List<TestScore>();
     }
 }

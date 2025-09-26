@@ -2,11 +2,11 @@
 {
     public class Comment
     {
-        public int CommentID { get; set; }
-        public int LectureID { get; set; }
-        public string UserID { get; set; }
+        public int CommentId { get; set; }
+        public int LectureId { get; set; }
+        public string UserId { get; set; }
         public string Content { get; set; }
-        public DateTime Timestamp { get; set; }
+        public DateTime Timestamp { get; set; } = DateTime.Now;
         public int? ParentCmtId { get; set; }
         public virtual Lecture Lecture { get; set; }
         public virtual User User { get; set; }

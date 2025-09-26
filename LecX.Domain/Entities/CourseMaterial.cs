@@ -4,8 +4,8 @@ namespace LecX.Domain.Entities
 {
     public class CourseMaterial
     {
-        public int MaterialID { get; set; }
-        public int CourseID { get; set; }
+        public int MaterialId { get; set; }
+        public int CourseId { get; set; }
         public FileType FileType { get; set; }
         public string FIleName { get; set; }
         public string FileExtension { get; set; }

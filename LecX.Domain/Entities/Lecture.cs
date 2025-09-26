@@ -4,8 +4,8 @@ namespace LecX.Domain.Entities
 {
     public class Lecture
     {
-        public int LectureID { get; set; }
-        public int CourseID { get; set; }
+        public int LectureId { get; set; }
+        public int CourseId { get; set; }
 
         [MaxLength(255)]
         public string Title { get; set; }

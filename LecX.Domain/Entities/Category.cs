@@ -5,7 +5,7 @@ namespace LecX.Domain.Entities
 {
     public class Category
     {
-        public int CategoryID { get; set; }
+        public int CategoryId { get; set; }
         public CourseCategory FullName { get; set; }
         public string Description { get; set; }
 

@@ -2,10 +2,10 @@
 {
     public class Certificate
     {
-        public int CertificateID { get; set; }
-        public string StudentID { get; set; }
-        public int CourseID { get; set; }
-        public DateTime CompletionDate { get; set; }
+        public int CertificateId { get; set; }
+        public string StudentId { get; set; }
+        public int CourseId { get; set; }
+        public DateTime CompletionDate { get; set; } = DateTime.Now;
         public string CertificateLink { get; set; }
 
         // Navigation properties
