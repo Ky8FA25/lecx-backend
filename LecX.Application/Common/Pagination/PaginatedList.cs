@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace LecX.WebApi.Common.Pagination
+namespace LecX.Application.Common.Pagination
 {
-    public class PaginatedList<T> : List<T>
+    public sealed class PaginatedList<T> : List<T>
     {
         public int PageIndex { get; private set; }
         public int TotalPages { get; private set; }

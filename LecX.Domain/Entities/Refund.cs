@@ -9,7 +9,7 @@ namespace LecX.Domain.Entities
         public string BankName { get; set; }
         public string AccountNumber { get; set; }
         public string FullName { get; set; }
-        public decimal MoneyNumber { get; set; }
+        public decimal Amount { get; set; }
         public string Status { get; set; }
         public RefundStatus RefundStatus { get; set; }
 
