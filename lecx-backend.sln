@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LecX.Infrastructure", "LecX
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LecX.WebApi", "LecX.WebApi\LecX.WebApi.csproj", "{26A9992D-DE4C-7047-E947-E7C000563A59}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LecX.Application", "LecX.Application\LecX.Application.csproj", "{289129B9-4400-4BE1-BB97-813D639786AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{26A9992D-DE4C-7047-E947-E7C000563A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26A9992D-DE4C-7047-E947-E7C000563A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26A9992D-DE4C-7047-E947-E7C000563A59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{289129B9-4400-4BE1-BB97-813D639786AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{289129B9-4400-4BE1-BB97-813D639786AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{289129B9-4400-4BE1-BB97-813D639786AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{289129B9-4400-4BE1-BB97-813D639786AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

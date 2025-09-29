@@ -12,25 +12,6 @@
     }
 
     /// <summary>
-    /// Course categories for classification
-    /// </summary>
-    public enum CourseCategory
-    {
-        Development = 0,
-        Business = 1,
-        ITAndSoftware = 2,
-        Design = 3,
-        Marketing = 4,
-        PersonalDevelopment = 5,
-        HealthAndFitness = 6,
-        Music = 7,
-        Photography = 8,
-        LanguageLearning = 9,
-        TeachingAndAcademics = 10,
-        Other = 11
-    }
-
-    /// <summary>
     /// Course levels to indicate difficulty
     /// </summary>
     public enum CourseLevel
