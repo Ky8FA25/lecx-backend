@@ -11,7 +11,7 @@ namespace LecX.Application.Features.Courses.CreateCourse
         public async Task<CreateCourseResponse> Handle(CreateCourseRequest req, CancellationToken ct)
         {
             var entity = new Course { Title = req.Title, Price = req.Price };
-            await db.Courses.AddAsync(entity, ct);
+            await db.Set<Course>().AddAsync(entity, ct);
             await db.SaveChangesAsync(ct);
 
             var dto = new CourseDto(entity.CourseId, entity.Title, entity.Price);

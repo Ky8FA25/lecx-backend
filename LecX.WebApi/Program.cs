@@ -1,4 +1,4 @@
-using FastEndpoints;
+﻿using FastEndpoints;
 using LecX.Application.Features.Courses.CreateCourse;
 using LecX.Infrastructure.Extensions;
 
@@ -35,8 +35,6 @@ namespace WebApi
             {
                 cfg.RegisterServicesFromAssembly(typeof(CreateCourseHandler).Assembly);
             });
-
-            builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 

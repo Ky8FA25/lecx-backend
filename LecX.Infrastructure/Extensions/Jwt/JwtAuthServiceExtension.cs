@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using LecX.Application.Features.Auth.Common;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -35,7 +36,7 @@ namespace LecX.Infrastructure.Extensions.Jwt
                 });
 
             services.AddAuthorization();
-
+            services.AddScoped<IJwtTokenService, JwtTokenService>();
             return services;
         }
     }
