@@ -1,4 +1,6 @@
-﻿using LecX.Infrastructure.Extensions.Database;
+﻿using FastEndpoints;
+using LecX.Application.Features.Courses.CreateCourse;
+using LecX.Infrastructure.Extensions.Database;
 using LecX.Infrastructure.Extensions.GoogleAuth;
 using LecX.Infrastructure.Extensions.Jwt;
 using LecX.Infrastructure.Extensions.Mail;
@@ -25,6 +27,12 @@ namespace LecX.Infrastructure.Extensions
             //services.AddHuggingfaceService();
             services.AddSwaggerWithAuth();
             services.AddAutoMapper(cfg => cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies()));
+            //fast endpoints & mediatR
+            services.AddFastEndpoints();
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(CreateCourseHandler).Assembly);
+            });
 
             return services;
         }

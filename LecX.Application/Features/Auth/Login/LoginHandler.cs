@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace LecX.Application.Features.Auth.Login
 {
-    public class LoginHandler : IRequestHandler<LoginRequest, AuthResponse>
+    public class LoginHandler : IRequestHandler<LoginCommand, LoginResult>
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -30,19 +30,21 @@ namespace LecX.Application.Features.Auth.Login
             _config = config;
         }
 
-        public async Task<AuthResponse> Handle(LoginRequest req, CancellationToken ct)
+        public async Task<LoginResult> Handle(LoginCommand req, CancellationToken ct)
         {
             var user = await _userManager.FindByNameAsync(req.EmailOrUserName)
                        ?? await _userManager.FindByEmailAsync(req.EmailOrUserName);
             if (user is null)
                 throw new UnauthorizedAccessException("User does not exist");
 
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+                throw new UnauthorizedAccessException("Email not confirmed");
+
             var pwResult = await _signInManager.CheckPasswordSignInAsync(user, req.Password, lockoutOnFailure: true);
+
             if (!pwResult.Succeeded)
                 throw new UnauthorizedAccessException("Wrong password");
 
-            if (!await _userManager.IsEmailConfirmedAsync(user))
-                throw new UnauthorizedAccessException("Email not confirmed");
 
             // Access token
             var jwt = await _jwt.GenerateAsync(user);
@@ -66,7 +68,7 @@ namespace LecX.Application.Features.Auth.Login
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            return new AuthResponse
+            return new LoginResult
             {
                 AccessToken = jwt,
                 AccessTokenExpiresUtc = expiresUtc,
@@ -81,7 +83,7 @@ namespace LecX.Application.Features.Auth.Login
                     AvatarUrl = user.ProfileImagePath,
                     Roles = roles.ToList()
                 },
-                ReturnUrl = req.ReturnUrl ?? "/"
+                ReturnUrl = req.ReturnUrl 
             };
         }
     }

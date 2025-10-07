@@ -4,7 +4,7 @@ using LecX.Application.Features.Auth.Common;
 
 namespace LecX.Application.Features.Auth.Refresh
 {
-    public sealed class RefreshRequest : IRequest<AuthResponse>
+    public sealed class RefreshCommand : IRequest<RefreshResult>
     {
         [JsonIgnore]                      // lấy từ cookie ở Endpoint
         public string? RefreshTokenPlain { get; set; }

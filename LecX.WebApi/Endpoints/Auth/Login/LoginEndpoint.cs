@@ -1,19 +1,22 @@
 ﻿using FastEndpoints;
-using LecX.Application.Features.Auth.Common;
+using IMapper = AutoMapper.IMapper;
 using LecX.Application.Features.Auth.Login;
 using MediatR;
+using LecX.WebApi.Endpoints.Auth.Common;
 
-namespace LecX.WebApi.Endpoints.Auth
+namespace LecX.WebApi.Endpoints.Auth.Login
 {
-    public sealed class LoginEndpoint : Endpoint<LoginRequest, AuthResponse>
+    public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
     {
-        private readonly IMediator _mediator;
+        private readonly ISender _sender;
         private readonly IWebHostEnvironment _env;
+        private readonly IMapper _mapper;
 
-        public LoginEndpoint(IMediator mediator, IWebHostEnvironment env)
+        public LoginEndpoint(ISender sender, IWebHostEnvironment env, IMapper mapper)
         {
-            _mediator = mediator;
+            _sender = sender;
             _env = env;
+            _mapper = mapper;
         }
 
         public override void Configure()
@@ -27,14 +30,17 @@ namespace LecX.WebApi.Endpoints.Auth
         {
             try
             {
-                req.RequestIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+                req.ReturnUrl = HttpContext.Request.Query["returnUrl"].FirstOrDefault() ?? "/";
 
-                var res = await _mediator.Send(req, ct);
+                var command = _mapper.Map<LoginCommand>(req);
+                command.RequestIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+                var result = await _sender.Send(command, ct);
 
                 // success: set cookie rồi trả 200
-                AppendRefreshCookie(HttpContext, res.RefreshTokenPlain, res.RefreshTokenExpiresUtc, _env.IsDevelopment());
-                res.RefreshTokenPlain = string.Empty;
+                AuthHelper.AppendRefreshCookie(HttpContext, result.RefreshTokenPlain, result.RefreshTokenExpiresUtc, _env.IsDevelopment());
 
+                var res = _mapper.Map<LoginResponse>(result)!;
                 await SendOkAsync(res, ct);
             }
             catch (UnauthorizedAccessException ex)
@@ -50,18 +56,6 @@ namespace LecX.WebApi.Endpoints.Auth
                 await HttpContext.Response.WriteAsJsonAsync(new { message = "Unexpected server error" }, cancellationToken: ct);
                 return;
             }
-        }
-
-
-        private static void AppendRefreshCookie(HttpContext ctx, string refreshPlain, DateTime refreshExpiresUtc, bool isDev)
-        {
-            ctx.Response.Cookies.Append("refreshToken", refreshPlain, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = !isDev,
-                SameSite = SameSiteMode.Strict,
-                Expires = refreshExpiresUtc
-            });
         }
     }
 }

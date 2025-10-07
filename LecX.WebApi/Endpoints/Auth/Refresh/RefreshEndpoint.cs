@@ -1,19 +1,22 @@
 ﻿using FastEndpoints;
-using LecX.Application.Features.Auth.Common;
 using LecX.Application.Features.Auth.Refresh;
+using LecX.WebApi.Endpoints.Auth.Common;
 using MediatR;
+using IMapper = AutoMapper.IMapper;
 
-namespace LecX.WebApi.Endpoints.Auth;
+namespace LecX.WebApi.Endpoints.Auth.Refresh;
 
-public sealed class RefreshEndpoint : EndpointWithoutRequest<AuthResponse>
+public sealed class RefreshEndpoint : EndpointWithoutRequest<RefreshResponse>
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
     private readonly IWebHostEnvironment _env;
+    private readonly IMapper _mapper;
 
-    public RefreshEndpoint(IMediator mediator, IWebHostEnvironment env)
+    public RefreshEndpoint(ISender sender, IWebHostEnvironment env, IMapper mapper)
     {
-        _mediator = mediator;
+        _sender = sender;
         _env = env;
+        _mapper = mapper;
     }
 
     public override void Configure()
@@ -34,22 +37,21 @@ public sealed class RefreshEndpoint : EndpointWithoutRequest<AuthResponse>
                 return;
             }
 
-            var returnUrl = HttpContext.Request.Query["returnUrl"].FirstOrDefault();
+            var returnUrl = HttpContext.Request.Query["returnUrl"].FirstOrDefault() ?? "/";
 
-            var req = new RefreshRequest
+            var command = new RefreshCommand
             {
                 RefreshTokenPlain = refreshPlain,
-                RequestIp = GetClientIp(HttpContext),
+                RequestIp = HttpContext.Connection.RemoteIpAddress?.ToString(),
                 ReturnUrl = returnUrl
             };
 
-            var res = await _mediator.Send(req, ct);
+            var result = await _sender.Send(command, ct);
 
             // Set lại cookie với token mới (HttpOnly)
-            AppendRefreshCookie(HttpContext, res.RefreshTokenPlain, res.RefreshTokenExpiresUtc, _env.IsDevelopment());
+            AuthHelper.AppendRefreshCookie(HttpContext, result.RefreshTokenPlain, result.RefreshTokenExpiresUtc, _env.IsDevelopment());
 
-            // Không trả refresh token trong body
-            res.RefreshTokenPlain = string.Empty;
+            var res = _mapper.Map<RefreshResponse>(result);
 
             await SendOkAsync(res, ct);
         }
@@ -66,24 +68,5 @@ public sealed class RefreshEndpoint : EndpointWithoutRequest<AuthResponse>
             await HttpContext.Response.WriteAsJsonAsync(new { message = "Unexpected server error" }, cancellationToken: ct);
             return;
         }
-    }
-
-    private static string? GetClientIp(HttpContext ctx)
-    {
-        // nếu có proxy và đã UseForwardedHeaders, ưu tiên X-Forwarded-For
-        if (ctx.Request.Headers.TryGetValue("X-Forwarded-For", out var v))
-            return v.ToString().Split(',')[0].Trim();
-        return ctx.Connection.RemoteIpAddress?.ToString();
-    }
-
-    private static void AppendRefreshCookie(HttpContext ctx, string refreshPlain, DateTime refreshExpiresUtc, bool isDev)
-    {
-        ctx.Response.Cookies.Append("refreshToken", refreshPlain, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = !isDev,
-            SameSite = SameSiteMode.Strict,
-            Expires = refreshExpiresUtc
-        });
     }
 }

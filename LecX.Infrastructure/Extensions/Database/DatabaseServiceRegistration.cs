@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LecX.Infrastructure.Extensions.Database
 {
-    public static class DatabseServiceRegistration
+    public static class DatabaseServiceRegistration
     {
         public static IServiceCollection AddDatabase(
             this IServiceCollection services,
@@ -18,7 +18,7 @@ namespace LecX.Infrastructure.Extensions.Database
             var connectionString =
                 config.GetConnectionString("sqlConnection")
                 ?? throw new InvalidOperationException(
-                    "Connection string 'DefaultConnection' not found."
+                    "Connection string 'sqlConnection' not found."
                 );
 
             services.AddDbContext<AppDbContext>(options => options.UseMySQL(connectionString));
@@ -44,10 +44,15 @@ namespace LecX.Infrastructure.Extensions.Database
                     options.SignIn.RequireConfirmedEmail = true; // Email must exist
                     options.SignIn.RequireConfirmedPhoneNumber = false; //
                 })
+
                 //.AddRoles<IdentityRole>() 
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
+            services.Configure<DataProtectionTokenProviderOptions>(o =>
+            {
+                o.TokenLifespan = TimeSpan.FromHours(2); 
+            });
 
             return services;
         }

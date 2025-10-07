@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace LecX.Application.Features.Auth.Refresh
 {
-    public sealed class RefreshHandler : IRequestHandler<RefreshRequest, AuthResponse>
+    public sealed class RefreshHandler : IRequestHandler<RefreshCommand, RefreshResult>
     {
         private readonly IAppDbContext _db;
         private readonly UserManager<User> _userManager;
@@ -27,7 +27,7 @@ namespace LecX.Application.Features.Auth.Refresh
             _config = config;
         }
 
-        public async Task<AuthResponse> Handle(RefreshRequest req, CancellationToken ct)
+        public async Task<RefreshResult> Handle(RefreshCommand req, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(req.RefreshTokenPlain))
                 throw new UnauthorizedAccessException("Missing refresh token");
@@ -75,7 +75,7 @@ namespace LecX.Application.Features.Auth.Refresh
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            return new AuthResponse
+            return new RefreshResult
             {
                 AccessToken = newJwt,
                 AccessTokenExpiresUtc = accessExpiresUtc,
@@ -90,7 +90,7 @@ namespace LecX.Application.Features.Auth.Refresh
                     AvatarUrl = user.ProfileImagePath,
                     Roles = roles.ToList()
                 },
-                ReturnUrl = req.ReturnUrl ?? "/"
+                ReturnUrl = req.ReturnUrl 
             };
         }
     }

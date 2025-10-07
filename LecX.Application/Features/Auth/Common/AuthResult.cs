@@ -1,6 +1,6 @@
 ﻿namespace LecX.Application.Features.Auth.Common
 {
-    public sealed class AuthResponse
+    public abstract class AuthResult
     {
         public string AccessToken { get; set; } = default!;
         public DateTime AccessTokenExpiresUtc { get; set; }   
@@ -9,7 +9,7 @@
         public DateTime RefreshTokenExpiresUtc { get; set; }  
 
         public UserDto User { get; set; } = default!;
-        public string? ReturnUrl { get; set; }                
+        public string? ReturnUrl { get; set; } = "/";
     }
 
     public sealed class UserDto
