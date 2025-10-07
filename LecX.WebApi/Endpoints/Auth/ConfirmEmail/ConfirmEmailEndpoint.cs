@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 
 public sealed class ConfirmEmailEndpoint(
-    UserManager<User> userManager,
-    ILogger<ConfirmEmailEndpoint> logger)
+    UserManager<User> userManager)
   : Endpoint<ConfirmEmailRequest>
 {
+    public const string Route = "/api/auth/confirm-email";
     public override void Configure()
     {
-        Get("/api/auth/confirm-email");
+        Get(Route);
         AllowAnonymous();
         Description(d => d.WithTags("Auth"));
     }

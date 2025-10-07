@@ -2,7 +2,7 @@
 using FastEndpoints;
 using MediatR;
 
-namespace LecX.WebApi.Endpoints.Courses
+namespace LecX.WebApi.Endpoints.Courses.CreateCourse
 {
     public sealed class CreateCourseEndpoint(ISender sender)
         : Endpoint<CreateCourseRequest, CreateCourseResponse>
@@ -12,6 +12,7 @@ namespace LecX.WebApi.Endpoints.Courses
             Post("/api/courses/create");
             Summary(s => s.Summary = "Create a new course");
             Description(d => d.WithTags("Courses"));
+            AllowAnonymous();
         }
 
         public override async Task HandleAsync(CreateCourseRequest req, CancellationToken ct)
