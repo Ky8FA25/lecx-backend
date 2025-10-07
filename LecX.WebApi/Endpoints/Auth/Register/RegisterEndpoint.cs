@@ -35,7 +35,7 @@ public sealed class RegisterEndpoint(
             var host = reqHttp.Host.Value;      
             var basePath = reqHttp.PathBase.Value;
 
-            var confirmUrl = $"{scheme}://{host}{basePath}/api/auth/confirm-email"
+            var confirmUrl = $"{reqHttp.Scheme}://{host}{basePath} + {ConfirmEmailEndpoint.Route}"
                            + $"?userId={result.UserId}"
                            + $"&token={result.EncodedEmailConfirmToken}"
                            + (string.IsNullOrEmpty(req.ReturnUrl) ? "" : $"&returnUrl={Uri.EscapeDataString(req.ReturnUrl)}");
