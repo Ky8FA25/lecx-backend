@@ -11,6 +11,7 @@ namespace LecX.WebApi.Endpoints.Courses
         {
             Post("/api/courses/create");
             Summary(s => s.Summary = "Create a new course");
+            Description(d => d.WithTags("Courses"));
         }
 
         public override async Task HandleAsync(CreateCourseRequest req, CancellationToken ct)

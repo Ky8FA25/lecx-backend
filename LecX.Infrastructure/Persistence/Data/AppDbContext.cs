@@ -32,7 +32,7 @@ namespace LecX.Infrastructure.Persistence.Data
         public DbSet<Report> Reports { get; set; }
         public DbSet<Refund> RequestTranfers { get; set; }
         public DbSet<InstructorConfirmation> InstructorConfirmations { get; set; }
-
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }

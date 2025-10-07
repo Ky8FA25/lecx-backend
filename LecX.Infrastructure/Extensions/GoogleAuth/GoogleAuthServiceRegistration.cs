@@ -12,22 +12,6 @@ public static class GoogleAuthServiceRegistration
         IConfiguration config
     )
     {
-        //var googleAuthSettings = new GoogleAuthSettings();
-        //config.GetSection("Authentication:Google").Bind(googleAuthSettings);
-
-        //services.AddAuthentication(
-        //    options =>
-        //    {
-        //        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        //        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-        //    })       
-        //    .AddGoogle(options =>
-        //    {
-        //        options.ClientId = googleAuthSettings.ClientId;
-        //        options.ClientSecret = googleAuthSettings.ClientSecret;
-        //        options.CallbackPath = "/signin-google";
-        //    });
-
         services
         .AddAuthentication()
         .AddGoogle(options =>
@@ -42,8 +26,14 @@ public static class GoogleAuthServiceRegistration
 
             // Map the picture to a claim
             options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+            options.Events.OnRemoteFailure = context =>
+            {
+                context.Response.Redirect("/api/auth/google-callback?error=access_denied");
+                context.HandleResponse(); // chặn exception mặc định
+                return Task.CompletedTask;
+            };
         });
-
+        
         services.AddScoped<IGoogleAuthService, GoogleAuthService>();
         return services;
     }

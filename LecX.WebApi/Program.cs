@@ -1,6 +1,7 @@
+﻿using ct.backend.Features.Auth.Common;
 using FastEndpoints;
-using LecX.Application.Features.Courses.CreateCourse;
 using LecX.Infrastructure.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace WebApi
 {
@@ -17,6 +18,7 @@ namespace WebApi
                 options.AppendTrailingSlash = false;
             });
             builder.Services.AddCoreInfrastructure(builder.Configuration);
+            builder.Services.AddScoped<IEmailTemplateService, EmailTemplateService>();
             builder.Services.AddCors(opt =>
             {
                 opt.AddDefaultPolicy(p => p
@@ -29,14 +31,12 @@ namespace WebApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
-            //fast endpoints & mediatR
-            builder.Services.AddFastEndpoints();
-            builder.Services.AddMediatR(cfg =>
+            builder.Services.Configure<ForwardedHeadersOptions>(o =>
             {
-                cfg.RegisterServicesFromAssembly(typeof(CreateCourseHandler).Assembly);
+                o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                o.ForwardLimit = 2;
+                o.RequireHeaderSymmetry = false;
             });
-
-            builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
