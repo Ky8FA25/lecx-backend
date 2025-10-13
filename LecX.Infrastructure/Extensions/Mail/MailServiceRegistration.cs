@@ -13,11 +13,6 @@ public static class MailServiceRegistration
     )
     {
         var mailConfigs = config.GetSection("MailSettings");
-        if (mailConfigs == null)
-        {
-            throw new InvalidOperationException("MailSettings configuration section not found.");
-        }
-
         services.Configure<MailSettings>(mailConfigs);
         services.AddTransient<IMailService, MailService>();
 

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace LecX.Application.Features.Auth.Login
 {
-    public sealed class LoginCommand : IRequest<LoginResult>
+    public sealed class LoginCommand : IRequest<AuthResult>
     {
         public string EmailOrUserName { get; set; } = default!;
         public string Password { get; set; } = default!;
