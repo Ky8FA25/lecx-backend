@@ -1,19 +1,15 @@
 ﻿using FastEndpoints;
 using LecX.Application.Features.Auth.GoogleCallBack;
-using LecX.Domain.Entities;
 using LecX.WebApi.Endpoints.Auth.Common;
 using LecX.WebApi.Endpoints.Auth.GoogleLogin;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
 public sealed class GoogleCallbackEndpoint(
     ISender sender,
-    SignInManager<User> signIn,
     IWebHostEnvironment env
 ) : Endpoint<GoogleCallbackRequest>
 {
-    public const string Route = "/api/auth/google-callback"; // 👈 chỉ đổi ở đây
+    public const string Route = "/api/auth/google-callback"; 
     public override void Configure()
     {
         Get(Route);
@@ -23,63 +19,56 @@ public sealed class GoogleCallbackEndpoint(
 
     public override async Task HandleAsync(GoogleCallbackRequest req, CancellationToken ct)
     {
-        var info = await signIn.GetExternalLoginInfoAsync();
-        if (info is null)
+        try
         {
-            await SendHtmlAndClose(@"window.opener?.postMessage({ error: 'Login Failed' }, '*');");
+            var result = await sender.Send(new GoogleCallbackCommand(
+                 RequestIp: HttpContext.Connection.RemoteIpAddress?.ToString()
+             ), ct);
+
+            // set refresh cookie (HTTP concern)
+            AuthHelper.AppendRefreshCookie(HttpContext, result.RefreshTokenPlain, result.RefreshTokenExpiresUtc, env.IsDevelopment());
+
+            // postMessage & close popup
+            var payloadJson = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                token = result.AccessToken,
+                user = result.User,
+                returnUrl = req.ReturnUrl
+            });
+
+            var script = $@"(function(){{
+                var params = new URLSearchParams(window.location.search);
+                var openerFromQuery = params.get('opener');
+                var openerOrigin = openerFromQuery || (document.referrer ? new URL(document.referrer).origin : '*');
+                var payload = {payloadJson};
+                if (window.opener && !window.opener.closed) {{
+                    window.opener.postMessage(payload, openerOrigin);
+                }}
+                setTimeout(function(){{ window.close(); }}, 0);
+            }})();";
+
+            await SendHtmlAndClose(script);
+        }
+        catch (InvalidOperationException ex)
+        {
+            var errorJson = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                error = new { message = ex.Message }
+            });
+
+            await SendHtmlAndClose($@"window.opener?.postMessage({errorJson}, '*');");
             return;
         }
-
-        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-        var name = info.Principal.FindFirstValue(ClaimTypes.Name);
-        var avatar = info.Principal.FindFirstValue("urn:google:picture");
-
-        if (string.IsNullOrWhiteSpace(email))
+        catch (Exception ex)
         {
-            await SendHtmlAndClose(@"window.opener?.postMessage({ error: 'No Email' }, '*');");
+            var errorJson = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                error = new { message = ex.Message }
+            });
+
+            await SendHtmlAndClose($@"window.opener?.postMessage({errorJson}, '*');");
             return;
         }
-
-        // tách tên
-        var parts = (name ?? email).Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        var firstName = parts.FirstOrDefault() ?? email;
-        var lastName = parts.Length > 1 ? string.Join(" ", parts.Skip(1)) : "";
-
-        // call handler
-        var result = await sender.Send(new GoogleCallbackCommand(
-            Provider: info.LoginProvider,
-            ProviderKey: info.ProviderKey,
-            Email: email,
-            FullName: name,
-            FirstName: firstName,
-            LastName: lastName,
-            AvatarUrl: avatar,
-            ClientIp: HttpContext.Connection.RemoteIpAddress?.ToString()
-        ), ct);
-
-        // set refresh cookie (HTTP concern)
-        AuthHelper.AppendRefreshCookie(HttpContext, result.RefreshTokenPlain, result.RefreshTokenExpiresUtc, env.IsDevelopment());
-
-        // postMessage & close popup
-        var payloadJson = System.Text.Json.JsonSerializer.Serialize(new
-        {
-            token = result.Jwt,
-            user = result.User,
-            returnUrl = req.ReturnUrl
-        });
-
-        var script = $@"(function(){{
-            var params = new URLSearchParams(window.location.search);
-            var openerFromQuery = params.get('opener');
-            var openerOrigin = openerFromQuery || (document.referrer ? new URL(document.referrer).origin : '*');
-            var payload = {payloadJson};
-            if (window.opener && !window.opener.closed) {{
-                window.opener.postMessage(payload, openerOrigin);
-            }}
-            setTimeout(function(){{ window.close(); }}, 0);
-        }})();";
-
-        await SendHtmlAndClose(script);
     }
 
     private async Task SendHtmlAndClose(string inlineJs)

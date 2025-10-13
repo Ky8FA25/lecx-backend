@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LecX.Application.Features.Auth.Common;
 using LecX.Application.Features.Auth.Login;
 using LecX.Application.Features.Auth.Refresh;
 using LecX.Application.Features.Auth.Register;
@@ -16,10 +17,10 @@ namespace LecX.WebApi.Endpoints.Auth.Common
         {
             //Login
             CreateMap<LoginRequest, LoginCommand>().ReverseMap();
-            CreateMap<LoginResult, LoginResponse>();
+            CreateMap<AuthResult, LoginResponse>();
 
             //Refresh token
-            CreateMap<RefreshResult, RefreshResponse>();
+            CreateMap<AuthResult, RefreshResponse>();
 
             //Register 
             CreateMap<RegisterRequest, RegisterCommand>().ReverseMap();

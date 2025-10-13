@@ -1,6 +1,6 @@
 ﻿namespace LecX.Application.Features.Auth.Common
 {
-    public abstract class AuthResult
+    public class AuthResult
     {
         public string AccessToken { get; set; } = default!;
         public DateTime AccessTokenExpiresUtc { get; set; }   
