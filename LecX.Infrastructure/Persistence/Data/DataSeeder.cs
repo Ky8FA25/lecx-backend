@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Google.Protobuf.Reflection;
 using LecX.Domain.Entities;
 using LecX.Domain.Enums;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace LecX.Infrastructure.Persistence.Data
 {
@@ -20,12 +21,15 @@ namespace LecX.Infrastructure.Persistence.Data
 
         public async Task SeedAllAsync()
         {
-            await _db.Database.MigrateAsync();
-            await SeedRolesAsync();
-            var users = await SeedUsersAsync();
-            await SeedCategoriesAsync();
-            await SeedInstructorsAsync(users.InstructorUser);   // shared PK: InstructorId == User.Id
-            await SeedCoursesAsync(users.InstructorUser);       // cần Instructor + Category
+            //await _db.Database.MigrateAsync();
+            //await SeedRolesAsync();
+
+            //var users = await SeedUsersAsync();
+            //await SeedCategoriesAsync();
+            //await SeedInstructorsAsync(users.InstructorUser);  
+            //await SeedCoursesAsync(users.InstructorUser);       
+            await SeedLectuesAsync(3);                         
+            await SeedComments(1);                             
         }
 
         private async Task SeedRolesAsync()
@@ -431,5 +435,107 @@ namespace LecX.Infrastructure.Persistence.Data
             await _db.SaveChangesAsync();
         }
 
+        private async Task SeedLectuesAsync(int courseId)
+        {
+            var lectureSet = _db.Set<Lecture>();
+            if (await lectureSet.AnyAsync()) return;
+            var lectures = new List<Lecture>
+            {
+                new Lecture
+                {
+                    LectureId = 1,
+                    CourseId = 1,
+                    Title = "Introduction to C# Programming",
+                    Description = "Overview of C# basics and .NET ecosystem.",
+                    UpLoadDate = DateTime.Now.AddDays(-10)
+                },
+                new Lecture
+                {
+                    LectureId = 2,
+                    CourseId = 1,
+                    Title = "Object-Oriented Programming in C#",
+                    Description = "Understanding classes, inheritance, and polymorphism.",
+                    UpLoadDate = DateTime.Now.AddDays(-8)
+                },
+                new Lecture
+                {
+                    LectureId = 3,
+                    CourseId = 2,
+                    Title = "Database Fundamentals",
+                    Description = "Introduction to SQL and relational database design.",
+                    UpLoadDate = DateTime.Now.AddDays(-5)
+                },
+                new Lecture
+                {
+                    LectureId = 4,
+                    CourseId = 2,
+                    Title = "Entity Framework Core Basics",
+                    Description = "Mapping entities and performing CRUD with EF Core.",
+                    UpLoadDate = DateTime.Now.AddDays(-3)
+                }
+            };
+            await lectureSet.AddRangeAsync(lectures);
+            await _db.SaveChangesAsync();
+        }
+
+        private async Task SeedComments(int lectureId)
+        {
+            var commentSet = _db.Set<Comment>();
+            if (await commentSet.AnyAsync()) return;
+            var comments = new List<Comment>
+            {
+                new Comment
+                {
+                    CommentId = 1,
+                    LectureId = lectureId,
+                    UserId = "student-0001",
+                    Content = "This introduction was really clear and helpful!",
+                    Timestamp = DateTime.Now.AddDays(-9)
+                },
+                new Comment
+                {
+                    CommentId = 2,
+                    LectureId = lectureId,
+                    UserId = "student-0001",
+                    Content = "Can you explain more about CLR?",
+                    Timestamp = DateTime.Now.AddDays(-8)
+                },
+                new Comment
+                {
+                    CommentId = 3,
+                    LectureId = lectureId,
+                    UserId = "student-0001",
+                    Content = "The OOP examples were great!",
+                    Timestamp = DateTime.Now.AddDays(-7)
+                },
+                new Comment
+                {
+                    CommentId = 4,
+                    LectureId = lectureId,
+                    UserId = "student-0001",
+                    Content = "Agree! Especially the inheritance demo 👍",
+                    ParentCmtId = 3, // reply
+                    Timestamp = DateTime.Now.AddDays(-7).AddHours(2)
+                },
+                new Comment
+                {
+                    CommentId = 5,
+                    LectureId = lectureId,
+                    UserId = "student-0001",
+                    Content = "Could you provide the SQL script from the lecture?",
+                    Timestamp = DateTime.Now.AddDays(-4)
+                },
+                new Comment
+                {
+                    CommentId = 6,
+                    LectureId = lectureId,
+                    UserId = "student-0001",
+                    Content = "EF Core makes things so much easier!",
+                    Timestamp = DateTime.Now.AddDays(-2)
+                }
+            };
+            await commentSet.AddRangeAsync(comments);
+            await _db.SaveChangesAsync();
+        }
     }
 }
