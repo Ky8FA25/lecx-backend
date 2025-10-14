@@ -1,49 +1,30 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FastEndpoints;
+using FastEndpoints.Swagger;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using NSwag;
 
-namespace LecX.Infrastructure.Extensions.Swagger
+namespace LecX.Infrastructure.Extensions.Swagger;
+
+public static class SwaggerServiceExtension
 {
-    public static class SwaggerServiceExtension
+    public static IServiceCollection AddSwaggerWithAuth(this IServiceCollection services)
     {
-        public static IServiceCollection AddSwaggerWithAuth(this IServiceCollection services)
+        // FastEndpoints
+        services.AddFastEndpoints();
+
+        // FastEndpoints.Swagger
+        services.SwaggerDocument(o =>
         {
-            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(c =>
+            o.AutoTagPathSegmentIndex = 2;
+            o.DocumentSettings = s =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "lecx-backend",
-                    Version = "v1"
-                });
+                s.Title = "lecx-backend";
+                s.Version = "v1"; // -> /swagger/v1/swagger.json
+            };
 
-                // Bearer JWT
-                c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "Nhập token theo dạng: Bearer {token}"
-                });
+            // (tuỳ version, có thể có o.EnableJWTBearerAuth = true; nhưng v5.24 dùng AddAuth như trên là chắc)
+        });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-            });
-            });
-            return services;
-        }
+        return services;
     }
 }

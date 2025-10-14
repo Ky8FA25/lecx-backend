@@ -36,6 +36,7 @@ public class GoogleAuthService : IGoogleAuthService
     {
         var email = info.Principal.FindFirstValue(ClaimTypes.Email);
         var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+        var avatar = info.Principal.FindFirstValue("urn:google:picture");
 
         var parts = name?.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var user = new User
@@ -43,12 +44,14 @@ public class GoogleAuthService : IGoogleAuthService
             UserName = email,
             Email = email,
             FirstName = parts?.FirstOrDefault() ?? "",
-            LastName = parts?.Length > 1 ? string.Join(" ", parts.Skip(1)) : ""
+            LastName = parts?.Length > 1 ? string.Join(" ", parts.Skip(1)) : "",
+            ProfileImagePath = avatar,
+            EmailConfirmed = true
         };
 
         var result = await _userManager.CreateAsync(user);
         if (!result.Succeeded)
-            throw new Exception("Failed to create user");
+            throw new InvalidOperationException(result.Errors.First().Description);
 
         return user;
     }
