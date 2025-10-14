@@ -4,7 +4,7 @@ using LecX.Application.Features.CourseMaterials.DeleteCourseMaterial;
 
 namespace LecX.WebApi.Endpoints.CourseMaterials.DeleteCourseMaterial
 {
-    public class DeleteMaterialValidator : Validator<DeleteMaterialRequest>
+    public sealed class DeleteMaterialValidator : Validator<DeleteMaterialRequest>
     {
         public DeleteMaterialValidator()
         {

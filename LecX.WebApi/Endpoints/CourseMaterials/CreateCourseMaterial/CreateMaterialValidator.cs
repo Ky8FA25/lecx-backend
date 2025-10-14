@@ -10,7 +10,11 @@ namespace LecX.WebApi.Endpoints.CourseMaterials.CreateCourseMaterial
         {
             RuleFor(x => x.CourseId).NotEmpty().WithMessage("CourseId is required.");
             RuleFor(x => x.FileName).NotEmpty().MaximumLength(255).WithMessage("File name is required and must not exceed 255 characters.");
-            RuleFor(x => x.MaterialsLink).NotEmpty().MaximumLength(2048).WithMessage("File extension is required.");
+            RuleFor(x => x.MaterialsLink).NotEmpty().MaximumLength(2048).WithMessage("Material link is required.");
+            RuleFor(x => x.FileType)
+                .NotEmpty()
+                .IsInEnum()
+                .WithMessage("Invalid FileType value. Must be one of: Image-0, Video-1, Document-2, or Other-3.");
             RuleFor(x => x.MaterialsLink)
                 .NotEmpty()
                 .MaximumLength(2048)

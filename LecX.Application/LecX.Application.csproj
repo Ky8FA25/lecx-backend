@@ -14,9 +14,6 @@
 
 	<ItemGroup>
 		<Folder Include="Common\Constants\" />
-		<Folder Include="Features\CourseMaterials\GetAllCourseMaterials\" />
-		<Folder Include="Features\CourseMaterials\GetCourseMaterialById\" />
-		<Folder Include="Features\CourseMaterials\UpdateCourseMaterial\" />
 		<Folder Include="Features\Courses\DeleteCourse\" />
 		<Folder Include="Features\Courses\GetAllCourse\" />
 		<Folder Include="Features\Courses\GetCourseById\" />

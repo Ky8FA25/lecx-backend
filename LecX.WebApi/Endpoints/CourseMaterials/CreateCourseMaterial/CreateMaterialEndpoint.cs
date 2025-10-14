@@ -11,7 +11,6 @@ namespace LecX.WebApi.Endpoints.CourseMaterials.CreateCourseMaterial
         {
             Post("/api/course-materials");
             Summary(s => s.Summary = "Create a new course material for a course");
-            Description(d => d.WithTags("CourseMaterials"));
             Roles("Admin", "Instructor");
         }
         public override async Task HandleAsync(CreateMaterialRequest req, CancellationToken ct)

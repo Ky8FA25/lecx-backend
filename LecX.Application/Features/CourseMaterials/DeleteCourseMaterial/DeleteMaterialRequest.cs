@@ -2,5 +2,5 @@
 
 namespace LecX.Application.Features.CourseMaterials.DeleteCourseMaterial
 {
-    public sealed record DeleteMaterialRequest(int MaterialId) : IRequest<DeleteCourseResponse>;
+    public sealed record DeleteMaterialRequest(int MaterialId) : IRequest<DeleteMaterialResponse>;
 }

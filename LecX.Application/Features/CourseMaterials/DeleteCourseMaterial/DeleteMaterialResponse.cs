@@ -2,7 +2,7 @@
 using LecX.Application.Features.CourseMaterials.CourseMaterialsDtos;
 namespace LecX.Application.Features.CourseMaterials.DeleteCourseMaterial
 {
-    public sealed record DeleteCourseResponse(
+    public sealed record DeleteMaterialResponse(
         bool Success,
         string Message
     ) : ResponseRecord<CourseMaterialDto>(Success, Message);

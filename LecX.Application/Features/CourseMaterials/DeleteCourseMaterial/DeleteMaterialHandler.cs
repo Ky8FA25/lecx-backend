@@ -9,24 +9,24 @@ using System.Threading.Tasks;
 
 namespace LecX.Application.Features.CourseMaterials.DeleteCourseMaterial
 {
-    public sealed class DeleteMaterialHandler(IAppDbContext db) : IRequestHandler<DeleteMaterialRequest, DeleteCourseResponse>
+    public sealed class DeleteMaterialHandler(IAppDbContext db) : IRequestHandler<DeleteMaterialRequest, DeleteMaterialResponse>
     {
-        public async Task<DeleteCourseResponse> Handle(DeleteMaterialRequest request, CancellationToken ct)
+        public async Task<DeleteMaterialResponse> Handle(DeleteMaterialRequest request, CancellationToken ct)
         {
             try
             {
                 var material = await db.Set<CourseMaterial>().FindAsync([request.MaterialId], ct);
                 if (material == null)
                 {
-                    return new DeleteCourseResponse(false, "Material not found.");
+                    return new DeleteMaterialResponse(false, "Material not found.");
                 }
                 db.Set<CourseMaterial>().Remove(material);
                 await db.SaveChangesAsync(ct);
-                return new DeleteCourseResponse(true, "Material deleted successfully.");
+                return new DeleteMaterialResponse(true, "Material deleted successfully.");
             }
             catch (Exception ex)
             {
-                return new DeleteCourseResponse(false, $"Error deleting material: {ex.Message}");
+                return new DeleteMaterialResponse(false, $"Error deleting material: {ex.Message}");
             }
         }
     }
