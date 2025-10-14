@@ -40,7 +40,7 @@ namespace LecX.Infrastructure.InternalService.Sercurity
             // 2) Refresh token
             var refreshPlain = RefreshTokenUtil.GeneratePlaintext();
             var refreshHash = RefreshTokenUtil.Hash(refreshPlain);
-            var refreshExp = DateTime.UtcNow.AddDays(_settings.ExpireDays);
+            var refreshExp = DateTime.Now.AddDays(_settings.ExpireDays);
 
             var rt = new RefreshToken
             {
@@ -62,7 +62,7 @@ namespace LecX.Infrastructure.InternalService.Sercurity
         /// </summary>
         public async Task<(string token, DateTime expiresUtc)> GenerateAccessAsync(User user)
         {
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
             var expires = now.AddMinutes(_settings.ExpireMinutes);
 
             var roles = await _userManager.GetRolesAsync(user);

@@ -7,5 +7,4 @@ namespace LecX.Application.Features.Auth.Logout
         public string? RefreshTokenPlain { get; init; }
         public string? RequestIp { get; init; }
     }
-
 }
