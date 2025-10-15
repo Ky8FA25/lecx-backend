@@ -25,7 +25,7 @@ namespace LecX.Application.Features.CourseMaterials.UpdateCourseMaterial
                     material.FileExtension = request.FileExtension;
                 if (!string.IsNullOrEmpty(request.MaterialsLink))
                     material.MaterialsLink = request.MaterialsLink;
-                db.Set<CourseMaterial>().Update(material);
+                material.UploadDate = DateTime.Now;
                 await db.SaveChangesAsync(ct);
                 return new UpdateMaterialResponse(true, "Material updated successfully.");
             }

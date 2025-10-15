@@ -18,7 +18,7 @@ namespace LecX.Application.Features.CourseMaterials.CreateCourseMaterials
                     FIleName = req.FileName,
                     FileExtension = req.FileExtension,
                     MaterialsLink = req.MaterialsLink,
-                    UploadDate = DateTime.UtcNow
+                    UploadDate = DateTime.Now
                 };
                 await db.Set<CourseMaterial>().AddAsync(entity, ct);
                 await db.SaveChangesAsync(ct);
