@@ -11,7 +11,8 @@ namespace LecX.WebApi.Endpoints.Courses.DeleteCourse
             Delete("/api/courses/{CourseId:int}");
             Summary(s => s.Summary = "Delete a course by ID");
             Description(d => d.WithTags("Courses"));
-            AllowAnonymous();
+            Roles("Admin", "Instructor");
+            
         }
 
         public override async Task HandleAsync(DeleteCourseRequest rq, CancellationToken ct)

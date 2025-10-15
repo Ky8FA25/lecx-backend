@@ -12,7 +12,7 @@ namespace LecX.WebApi.Endpoints.Courses.UpdateCourse
             Put("/api/courses/{CourseId:int}");
             Summary(s => s.Summary = "Update an existing course");
             Description(d => d.WithTags("Courses"));
-            AllowAnonymous();
+            Roles("Admin", "Instructor");            
         }
 
         public override async Task HandleAsync(UpdateCourseRequest req, CancellationToken ct)

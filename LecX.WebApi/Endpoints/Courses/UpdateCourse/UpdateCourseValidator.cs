@@ -24,9 +24,7 @@ namespace LecX.WebApi.Endpoints.Courses.UpdateCourse
 
             RuleFor(x => x.UpdateCourseDto.Level)
                 .IsInEnum().WithMessage("Invalid course level.");
-
-            RuleFor(x => x.UpdateCourseDto.Status)
-                .IsInEnum().WithMessage("Invalid course status.");
+            
         }
     }
 }
