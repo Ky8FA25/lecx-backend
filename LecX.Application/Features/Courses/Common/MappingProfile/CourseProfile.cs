@@ -26,6 +26,8 @@ namespace LecX.Application.Features.Courses.Common.MappingProfile
             CreateMap<UpdateCourseDto, Course>()
                 .ForMember(dest => dest.CourseId, opt => opt.Ignore())
                 .ForMember(dest => dest.InstructorId, opt => opt.Ignore());
+            // Course → UpdateCourseDto
+            CreateMap<Course, UpdateCourseDto>();
         }
     }
 }

@@ -31,7 +31,7 @@ namespace LecX.Application.Features.Courses.UpdateCourse
             db.Set<Course>().Update(entity);
             await db.SaveChangesAsync(ct);
 
-            var updatedDto = mapper.Map<CourseDto>(entity);
+            var updatedDto = mapper.Map<UpdateCourseDto>(entity);
             return new UpdateCourseResponse(updatedDto);
         }
     }

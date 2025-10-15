@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace LecX.Application.Features.Courses.UpdateCourse
 {
-    public sealed record UpdateCourseResponse(CourseDto UpdatedCourse);
+    public sealed record UpdateCourseResponse(UpdateCourseDto UpdatedCourse);
     
 }
