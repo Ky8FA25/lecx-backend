@@ -17,14 +17,17 @@ namespace LecX.Application.Features.Comments.CreateComment
             var lectureExists = await db.Set<Lecture>()
                 .AnyAsync(x => x.LectureId == req.LectureId, ct);
             if (!lectureExists)
-                return new() { Message = "Lecture not found" };
+                return new("Lecture not found");
 
             if (req.ParentCmtId is not null)
             {
                 var parent = await db.Set<Comment>()
-                    .SingleOrDefaultAsync(c => c.CommentId == req.ParentCmtId, ct);
+                    .SingleOrDefaultAsync(c =>
+                        c.LectureId == req.LectureId &&
+                        c.CommentId == req.ParentCmtId, ct);
+
                 if (parent is null || parent.IsDeleted)
-                    return new() { Message = "Parent comment invalid" };
+                    return new("Parent comment invalid");
             }
 
             var comment = mapper.Map<Comment>(req);
@@ -35,17 +38,12 @@ namespace LecX.Application.Features.Comments.CreateComment
                 var affected = await db.SaveChangesAsync(ct);
 
                 return affected > 0
-                    ? new()
-                    {
-                        Comment = mapper.Map<CommentDto>(comment),
-                        Success = true,
-                        Message = "Success"
-                    }
-                    : new() { Message = "Failed" };
+                    ? new("Success", true, mapper.Map<CommentDto>(comment))
+                    : new("Failed");
             }
             catch (DbUpdateException)
             {
-                return new() { Message = "Error while creating comment" };
+                return new("Error while creating comment");
             }
         }
     }

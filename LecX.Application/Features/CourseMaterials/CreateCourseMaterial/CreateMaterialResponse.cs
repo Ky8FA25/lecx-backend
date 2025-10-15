@@ -7,5 +7,5 @@ namespace LecX.Application.Features.CourseMaterials.CreateCourseMaterials
         bool Success,
         string Message,
         CourseMaterialDto? Data = null
-    ) : ResponseRecord<CourseMaterialDto>(Success, Message, Data);
+    ) : GenericResponseRecord<CourseMaterialDto>(Success, Message, Data);
 }
