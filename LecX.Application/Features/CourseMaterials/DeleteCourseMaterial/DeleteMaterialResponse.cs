@@ -5,5 +5,5 @@ namespace LecX.Application.Features.CourseMaterials.DeleteCourseMaterial
     public sealed record DeleteMaterialResponse(
         bool Success,
         string Message
-    ) : ResponseRecord<CourseMaterialDto>(Success, Message);
+    ) : GenericResponseRecord<CourseMaterialDto>(Success, Message);
 }

@@ -7,5 +7,5 @@ namespace LecX.Application.Features.CourseMaterials.GetAllCourseMaterials
         bool Success,
         string Message,
         List<CourseMaterialDto>? Data = null
-    ) : ResponseRecord<List<CourseMaterialDto>>(Success, Message, Data);
+    ) : GenericResponseRecord<List<CourseMaterialDto>>(Success, Message, Data);
 }

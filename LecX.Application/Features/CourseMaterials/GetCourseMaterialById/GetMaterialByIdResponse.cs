@@ -6,5 +6,5 @@ using LecX.Application.Features.CourseMaterials.CourseMaterialsDtos;
 namespace LecX.Application.Features.CourseMaterials.GetCourseMaterialById
 {
     public sealed record GetMaterialByIdResponse(bool Success, string Message, CourseMaterialDto? Data = null  )
-        : ResponseRecord<CourseMaterialDto>(Success,Message,Data);
+        : GenericResponseRecord<CourseMaterialDto>(Success,Message,Data);
 }
