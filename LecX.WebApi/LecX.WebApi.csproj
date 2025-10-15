@@ -15,7 +15,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\LecX.Application\LecX.Application.csproj" />
-		<ProjectReference Include="..\LecX.Domain\LecX.Domain.csproj" />
 		<ProjectReference Include="..\LecX.Infrastructure\LecX.Infrastructure.csproj" />
 	</ItemGroup>
 

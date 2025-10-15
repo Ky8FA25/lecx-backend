@@ -52,13 +52,6 @@ namespace WebApi
             //}
 
             app.UseForwardedHeaders();
-            app.UseFastEndpoints();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwaggerGen(); 
-            }
 
             app.UseHttpsRedirection();
 
@@ -66,6 +59,11 @@ namespace WebApi
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseFastEndpoints();
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+                app.UseSwaggerGen();
 
             app.MapControllers();
 
