@@ -1,5 +1,6 @@
 ﻿using ct.backend.Features.Auth.Common;
 using FastEndpoints;
+using FastEndpoints.Swagger;
 using LecX.Infrastructure.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 
@@ -29,7 +30,6 @@ namespace WebApi
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.Configure<ForwardedHeadersOptions>(o =>
             {
@@ -53,13 +53,6 @@ namespace WebApi
 
             app.UseForwardedHeaders();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
             app.UseHttpsRedirection();
 
             app.UseCors();
@@ -68,6 +61,9 @@ namespace WebApi
             app.UseAuthorization();
 
             app.UseFastEndpoints();
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+                app.UseSwaggerGen();
 
             app.MapControllers();
 

@@ -12,14 +12,16 @@ public static class GoogleAuthServiceRegistration
         IConfiguration config
     )
     {
+        var section = config.GetSection("Authentication:Google");
+        var s = section.Get<GoogleAuthSettings>()
+        ?? throw new InvalidOperationException("Authentication:Google section is missing or invalid.");
+
         services
         .AddAuthentication()
-        .AddGoogle(options =>
+        .AddGoogle((options) =>
         {
-            options.ClientId = config["Authentication:Google:ClientId"]
-                ?? throw new InvalidOperationException("Missing Google:ClientId"); ;
-            options.ClientSecret = config["Authentication:Google:ClientSecret"]
-                ?? throw new InvalidOperationException("Missing Google:ClientSecret"); ;
+            options.ClientId = s.ClientId;
+            options.ClientSecret = s.ClientSecret;
             options.CallbackPath = "/signin-google";
             // Explicitly request the profile scope
             options.Scope.Add("profile");
@@ -33,7 +35,7 @@ public static class GoogleAuthServiceRegistration
                 return Task.CompletedTask;
             };
         });
-        
+        services.Configure<GoogleAuthSettings>(section);
         services.AddScoped<IGoogleAuthService, GoogleAuthService>();
         return services;
     }

@@ -8,6 +8,9 @@
         public string Content { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.Now;
         public int? ParentCmtId { get; set; }
+        public bool IsEdited { get; set; } = false;
+        public bool IsDeleted { get; set; } = false;
+        public int LikeCount { get; set; } = 0;
         public virtual Lecture Lecture { get; set; }
         public virtual User User { get; set; }
         public virtual Comment ParentComment { get; set; }

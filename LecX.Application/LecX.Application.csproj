@@ -8,16 +8,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="MediatR" Version="13.0.0" />
+		<PackageReference Include="AutoMapper" Version="15.0.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Common\Constants\" />
-		<Folder Include="Common\Dtos\" />
-		<Folder Include="Features\Assignments\DeleteAssignment\" />
-		<Folder Include="Features\Assignments\AssignmentDtos\" />
-		<Folder Include="Features\Assignments\UpdateAssignment\" />
 		<Folder Include="Features\Courses\DeleteCourse\" />
 		<Folder Include="Features\Courses\GetAllCourse\" />
 		<Folder Include="Features\Courses\GetCourseById\" />

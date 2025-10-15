@@ -18,7 +18,7 @@ namespace LecX.Application.Features.Auth.Logout
 
                 if (rt is not null && rt.RevokedAtUtc is null)
                 {
-                    rt.RevokedAtUtc = DateTime.UtcNow;
+                    rt.RevokedAtUtc = DateTime.Now;
                     rt.RevokedByIp = request.RequestIp;
                     await db.SaveChangesAsync(ct);
                 }
