@@ -24,7 +24,7 @@ namespace LecX.Application.Features.Comments.GetCommentById
             if (commentDto is null)
                 throw new KeyNotFoundException("Comment not found");
 
-            return new GetCommentByIdResponse { Comment = commentDto, Success = true };
+            return new GetCommentByIdResponse { Data = commentDto, Success = true };
         }
     }
 }

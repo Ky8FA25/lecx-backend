@@ -30,7 +30,7 @@ namespace LecX.Application.Features.Comments.UpdateComment
                 return affected > 0
                     ? new()
                     {
-                        Comment = mapper.Map<CommentDto>(comment),
+                        Data = mapper.Map<CommentDto>(comment),
                         Success = true,
                         Message = "Success"
                     }
