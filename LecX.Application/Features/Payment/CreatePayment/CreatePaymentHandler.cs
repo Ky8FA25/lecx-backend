@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Net.payOS;
 using Net.payOS.Types;
+using System.Security.Claims;
 
 namespace LecX.Application.Features.Payment.CreatePayment
 {
@@ -14,24 +15,25 @@ namespace LecX.Application.Features.Payment.CreatePayment
         IAppDbContext db,
         UserManager<User> userManager,
         PayOS payOS,
-        IHttpContextAccessor httpContext)
-        : IRequestHandler<CreatePaymentRequest, CreatePaymentResponse>
+        IHttpContextAccessor httpContext
+    ) : IRequestHandler<CreatePaymentRequest, CreatePaymentResponse>
     {
         public async Task<CreatePaymentResponse> Handle(CreatePaymentRequest request, CancellationToken cancellationToken)
         {
+            // Kiểm tra khóa học tồn tại
             var course = await db.Set<Course>()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.CourseId == request.CourseId, cancellationToken)
-            ?? throw new Exception($"Course with ID {request.CourseId} not found");
+                ?? throw new KeyNotFoundException($"Course with ID {request.CourseId} not found");
 
-            //Lấy user ID từ JWT claim
-            var userId = httpContext.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);            
-
-            if (string.IsNullOrEmpty(userId.Value))
+            // Lấy user ID từ JWT claim
+            var userId = httpContext.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
                 throw new UnauthorizedAccessException("User not logged in");
 
-            var currentUser = await userManager.FindByIdAsync(userId.Value)
-                ?? throw new Exception("User not found");
+            // Tìm user hiện tại
+            var currentUser = await userManager.FindByIdAsync(userId)
+                ?? throw new KeyNotFoundException("User not found");
 
             // Kiểm tra xem học viên đã ghi danh chưa
             var alreadyEnrolled = await db.Set<StudentCourse>()
@@ -39,7 +41,6 @@ namespace LecX.Application.Features.Payment.CreatePayment
 
             if (alreadyEnrolled)
             {
-                // Có thể trả về URL trang khóa học hoặc báo lỗi tuỳ logic
                 return new CreatePaymentResponse(
                     CheckoutUrl: null,
                     OrderCode: 0,
@@ -49,28 +50,29 @@ namespace LecX.Application.Features.Payment.CreatePayment
 
             // Tạo mã đơn hàng duy nhất
             var orderCode = int.Parse($"{DateTime.UtcNow:HHmmss}{new Random().Next(100, 999)}");
-            // Tạo đối tượng ItemData
+
+            // Tạo ItemData và PaymentData
             var item = new ItemData(course.Title, 1, (int)course.Price);
-            // Tạo URL trả về và hủy
             var requestInfo = httpContext.HttpContext!.Request;
             var baseUrl = $"{requestInfo.Scheme}://{requestInfo.Host}";
             var returnUrl = $"{baseUrl}/api/payments/success?orderCode={orderCode}";
             var cancelUrl = $"{baseUrl}/api/payments/cancel?orderCode={orderCode}";
-            // Tạo đối tượng PaymentData
+
             var paymentData = new PaymentData(
-               orderCode,
-               (int)course.Price,
-               $"{course.Title}-{orderCode}",
-               new List<ItemData> { item },
-               cancelUrl,
-               returnUrl,
-               currentUser.FirstName,
-               currentUser.Email
-           );
-            // Tạo liên kết thanh toán
+                orderCode,
+                (int)course.Price,
+                $"{course.CourseCode}-{orderCode}",
+                new List<ItemData> { item },
+                cancelUrl,
+                returnUrl,
+                currentUser.FirstName,
+                currentUser.Email
+            );
+
+            // Gọi PayOS API
             var createPayment = await payOS.createPaymentLink(paymentData);
 
-            // Lưu DB
+            // Lưu thông tin Payment vào DB
             var payment = new LecX.Domain.Entities.Payment
             {
                 CourseId = course.CourseId,
@@ -87,6 +89,7 @@ namespace LecX.Application.Features.Payment.CreatePayment
             db.Set<LecX.Domain.Entities.Payment>().Add(payment);
             await db.SaveChangesAsync(cancellationToken);
 
+            // Trả response
             return new CreatePaymentResponse(createPayment.checkoutUrl, orderCode, "Payment link created successfully");
         }
     }
