@@ -30,4 +30,8 @@
 	  <ProjectReference Include="..\LecX.Application\LecX.Application.csproj" />
 	  <ProjectReference Include="..\LecX.Domain\LecX.Domain.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ExternalServices\PayOS\" />
+	</ItemGroup>
 </Project>
