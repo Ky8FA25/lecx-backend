@@ -1,4 +1,4 @@
-﻿using LecX.Application.Abstractions;
+﻿using LecX.Application.Abstractions.Persistence;
 using LecX.Domain.Entities;
 using LecX.Domain.Enums;
 using MediatR;
@@ -7,11 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Net.payOS;
 using Net.payOS.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LecX.Application.Features.Payment.CreatePayment
 {

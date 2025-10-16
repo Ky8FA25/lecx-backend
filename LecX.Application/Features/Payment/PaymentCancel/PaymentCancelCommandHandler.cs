@@ -1,14 +1,9 @@
-﻿using LecX.Application.Abstractions;
+﻿using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Features.Payment.Common;
 using LecX.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Net.payOS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LecX.Application.Features.Payment.PaymentCancel
 {

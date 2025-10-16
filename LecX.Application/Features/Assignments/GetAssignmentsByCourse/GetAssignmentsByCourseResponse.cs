@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LecX.Application.Common.Dtos;
-using LecX.Application.Common.Pagination;
+using LecX.Application.Common.Dtos;
 using LecX.Application.Features.Assignments.AssignmentsDtos;
 namespace LecX.Application.Features.Assignments.GetAssignmentsByCourse
 {
