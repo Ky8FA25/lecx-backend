@@ -8,5 +8,7 @@ namespace LecX.Application.Features.Comments.GetCommentsByLecture
         public int? ParentCmtId { get; set; }
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
+
+
     }
 }
