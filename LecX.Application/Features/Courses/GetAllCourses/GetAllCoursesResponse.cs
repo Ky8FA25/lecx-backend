@@ -1,4 +1,4 @@
-﻿using LecX.Application.Common.Pagination;
+﻿using LecX.Application.Common.Dtos;
 using LecX.Application.Features.Courses.CourseDtos;
 
 namespace LecX.Application.Features.Courses.GetAllCourses

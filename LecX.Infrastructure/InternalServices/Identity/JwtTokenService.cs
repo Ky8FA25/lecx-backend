@@ -1,4 +1,4 @@
-﻿using LecX.Application.Abstractions.InternalServices.Sercurity;
+﻿using LecX.Application.Abstractions.InternalServices.Identity;
 using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Features.Auth.Common;
 using LecX.Domain.Entities;
@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace LecX.Infrastructure.InternalServices.Sercurity
+namespace LecX.Infrastructure.InternalServices.Identity
 {
     public sealed class JwtTokenService : IJwtTokenService
     {

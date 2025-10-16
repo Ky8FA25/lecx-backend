@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace LecX.Application.Common.Pagination
+namespace LecX.Application.Common.Dtos
 {
     public sealed class PaginatedResponse<T>
     {

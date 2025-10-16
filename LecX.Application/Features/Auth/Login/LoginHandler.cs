@@ -1,4 +1,4 @@
-﻿using LecX.Application.Abstractions.InternalServices.Sercurity;
+﻿using LecX.Application.Abstractions.InternalServices.Identity;
 using LecX.Application.Features.Auth.Common;
 using LecX.Domain.Entities;
 using MediatR;

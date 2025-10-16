@@ -22,7 +22,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Common\Constants\" />
 		<Folder Include="Features\Courses\DeleteCourse\" />
 		<Folder Include="Features\Courses\GetCourseById\" />
 		<Folder Include="Features\Courses\UpdateCourse\" />
