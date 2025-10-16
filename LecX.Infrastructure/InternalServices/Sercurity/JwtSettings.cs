@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LecX.Infrastructure.InternalService.Sercurity
+namespace LecX.Infrastructure.InternalServices.Sercurity
 {
     public sealed class JwtSettings
     {

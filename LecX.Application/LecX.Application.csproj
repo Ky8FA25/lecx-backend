@@ -16,7 +16,6 @@
 
 	<ItemGroup>
 		<Folder Include="Common\Constants\" />
-		<Folder Include="Common\Dtos\" />
 		<Folder Include="Features\Courses\DeleteCourse\" />
 		<Folder Include="Features\Courses\GetAllCourse\" />
 		<Folder Include="Features\Courses\GetCourseById\" />

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LecX.Application.Abstractions;
+using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Features.Courses.CourseDtos;
 using LecX.Domain.Entities;
 using MediatR;

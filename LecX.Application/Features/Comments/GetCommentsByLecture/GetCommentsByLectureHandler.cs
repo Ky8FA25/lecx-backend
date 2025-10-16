@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using LecX.Application.Abstractions;
+using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Common.Pagination;
 using LecX.Application.Features.Comments.Common;
 using LecX.Domain.Entities;

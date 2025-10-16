@@ -1,5 +1,5 @@
-﻿using LecX.Application.Abstractions;
-using LecX.Application.Abstractions.InternalService.Sercurity;
+﻿using LecX.Application.Abstractions.InternalServices.Sercurity;
+using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Features.Auth.Common;
 using LecX.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace LecX.Infrastructure.InternalService.Sercurity
+namespace LecX.Infrastructure.InternalServices.Sercurity
 {
     public sealed class JwtTokenService : IJwtTokenService
     {
