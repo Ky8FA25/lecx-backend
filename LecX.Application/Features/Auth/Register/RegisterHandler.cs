@@ -1,4 +1,5 @@
-﻿using LecX.Domain.Entities;
+﻿using LecX.Application.Abstractions.ExternalServices.GoogleStorage;
+using LecX.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
@@ -6,7 +7,8 @@ using Microsoft.AspNetCore.WebUtilities;
 namespace LecX.Application.Features.Auth.Register;
 
 public sealed class RegisterHandler(
-    UserManager<User> userManager
+    UserManager<User> userManager,
+    IGoogleStorageService googleStorageService
 ) : IRequestHandler<RegisterCommand, RegisterResult>
 {
     public async Task<RegisterResult> Handle(RegisterCommand request, CancellationToken ct)
@@ -24,7 +26,7 @@ public sealed class RegisterHandler(
         var user = new User
         {
             UserName = request.Email.Split('@')[0] + $"{rnd.Next(0, 10)}{rnd.Next(0, 10)}{rnd.Next(0, 10)}{rnd.Next(0, 10)}",
-            ProfileImagePath = "",
+            ProfileImagePath = googleStorageService.GetDefaultAvatar(),
             FirstName = request.FirstName,
             LastName = request.LastName ?? "",
             Email = request.Email,

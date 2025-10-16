@@ -2,6 +2,7 @@
 using LecX.Application.Features.Courses.CreateCourse;
 using LecX.Infrastructure.Extensions.Database;
 using LecX.Infrastructure.Extensions.GoogleAuth;
+using LecX.Infrastructure.Extensions.GoogleStorage;
 using LecX.Infrastructure.Extensions.Jwt;
 using LecX.Infrastructure.Extensions.Mail;
 using LecX.Infrastructure.Extensions.Swagger;
@@ -12,6 +13,7 @@ namespace LecX.Infrastructure.Extensions
 {
     public static class CoreServiceRegistration
     {
+        [Obsolete]
         public static IServiceCollection AddCoreInfrastructure(
             this IServiceCollection services,
             IConfiguration config
@@ -21,6 +23,7 @@ namespace LecX.Infrastructure.Extensions
             services.AddJwtAuthentication(config);
             services.AddMailService(config);
             services.AddGoogleAuthService(config);
+            services.AddGoogleStorage(config);
             //services.AddStorageService(config);
             //services.AddRabbitMq(config);
             //services.AddPayment(config);
