@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LecX.Application.Abstractions;
+using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Features.Comments.Common;
 using LecX.Domain.Entities;
 using MediatR;
@@ -30,7 +30,7 @@ namespace LecX.Application.Features.Comments.UpdateComment
                 return affected > 0
                     ? new()
                     {
-                        Comment = mapper.Map<CommentDto>(comment),
+                        Data = mapper.Map<CommentDto>(comment),
                         Success = true,
                         Message = "Success"
                     }

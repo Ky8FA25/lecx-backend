@@ -1,4 +1,4 @@
-﻿using LecX.Application.Abstractions;
+﻿using LecX.Application.Abstractions.Persistence;
 using LecX.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -23,16 +23,16 @@ namespace LecX.Application.Features.Comments.DeleteComment
             {
                 var affected = await dbContext.SaveChangesAsync(ct);
                 return affected > 0
-                    ? new() { Success = true, Message = "Deleted successfully" }
-                    : new() { Success = false, Message = "No rows affected" };
+                    ? new(true, "Deleted successfully")
+                    : new(false, "No rows affected" );
             }
             catch (DbUpdateConcurrencyException)
             {
-                return new() { Success = false, Message = "Comment no longer exists (concurrency)" };
+                return new(false, "Comment no longer exists (concurrency)");
             }
             catch (DbUpdateException)
             {
-                return new() { Success = false, Message = "Database error while deleting comment" };
+                return new(false, "Database error while deleting comment") ;
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using LecX.Application.Features.Auth.Common;
 using LecX.Domain.Entities;
 
-namespace LecX.Application.Abstractions.InternalService.Sercurity;
+namespace LecX.Application.Abstractions.InternalServices.Sercurity;
 
 public interface IJwtTokenService
 {

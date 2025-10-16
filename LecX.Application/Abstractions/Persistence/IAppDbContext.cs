@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace LecX.Application.Abstractions
+namespace LecX.Application.Abstractions.Persistence
 {
     public interface IAppDbContext
     {

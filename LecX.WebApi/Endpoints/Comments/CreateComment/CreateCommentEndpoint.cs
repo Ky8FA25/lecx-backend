@@ -34,7 +34,7 @@ namespace LecX.WebApi.Endpoints.Comments.CreateComment
             catch (Exception ex)
             {
                 await SendAsync(
-                    new () { Message = ex.Message}, StatusCodes.Status500InternalServerError,  ct);
+                    new (ex.Message), StatusCodes.Status500InternalServerError,  ct);
             }
         }
     }

@@ -1,5 +1,5 @@
 ﻿using LecX.Application.Abstractions.ExternalServices.GoogleAuth;
-using LecX.Application.Abstractions.InternalService.Sercurity;
+using LecX.Application.Abstractions.InternalServices.Sercurity;
 using LecX.Application.Features.Auth.Common;
 using LecX.Domain.Entities;
 using MediatR;

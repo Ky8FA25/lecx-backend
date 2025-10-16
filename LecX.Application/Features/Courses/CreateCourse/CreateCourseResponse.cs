@@ -2,5 +2,5 @@
 
 namespace LecX.Application.Features.Courses.CreateCourse
 {
-    public sealed record CreateCourseResponse(CourseDto Course);
+    public sealed record CreateCourseResponse(CreateCourseDto Course);
 }

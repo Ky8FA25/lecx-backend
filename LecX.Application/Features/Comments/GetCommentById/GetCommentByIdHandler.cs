@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using LecX.Application.Abstractions;
+using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Features.Comments.Common;
 using LecX.Domain.Entities;
 using MediatR;
@@ -24,7 +24,7 @@ namespace LecX.Application.Features.Comments.GetCommentById
             if (commentDto is null)
                 throw new KeyNotFoundException("Comment not found");
 
-            return new GetCommentByIdResponse { Comment = commentDto, Success = true };
+            return new GetCommentByIdResponse { Data = commentDto, Success = true };
         }
     }
 }
