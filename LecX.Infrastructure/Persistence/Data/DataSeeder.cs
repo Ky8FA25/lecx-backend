@@ -75,7 +75,7 @@ namespace LecX.Infrastructure.Persistence.Data
                     Address = "VN",
                     Dob = new DateTime(2000, 1, 1),
                     Gender = Gender.Male,                 // nếu User.Gender là enum
-                    ProfileImagePath = "/images/default.png",
+                    ProfileImagePath = "/assets/images/default.jpg",
                     WalletUser = 0.0                      // nên là decimal trong entity
                 };
 
