@@ -29,7 +29,7 @@ namespace LecX.WebApi.Endpoints.Storage.Upload
 
             await using var stream = file.OpenReadStream();
 
-            var (ext, fileName) = FileNameHelper.Normalize(file.FileName);
+            var (fileName,ext) = FileNameHelper.Normalize(file.FileName);
 
             var folder = string.IsNullOrWhiteSpace(req.Prefix)
                 ? StoragePaths.Default
