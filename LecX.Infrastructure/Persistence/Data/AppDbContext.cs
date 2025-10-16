@@ -1,4 +1,4 @@
-﻿using LecX.Application.Abstractions;
+﻿using LecX.Application.Abstractions.Persistence;
 using LecX.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
