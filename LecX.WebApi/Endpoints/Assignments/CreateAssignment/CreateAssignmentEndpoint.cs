@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using LecX.Application.Features.Assignments.CreateAssignment;
 using FastEndpoints;
-using System.Security.Claims;
 
 namespace LecX.WebApi.Endpoints.Assignments.CreateAssignment
 {

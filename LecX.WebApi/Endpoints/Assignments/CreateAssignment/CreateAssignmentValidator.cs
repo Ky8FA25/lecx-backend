@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
 using FluentValidation;
 using LecX.Application.Features.Assignments.CreateAssignment;
-using LecX.Domain.Enums;
 
 namespace LecX.WebApi.Endpoints.Assignments.CreateAssignment
 {
