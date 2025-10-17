@@ -1,4 +1,4 @@
-﻿using LecX.Application.Abstractions;
+﻿using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Features.CourseMaterials.CourseMaterialsDtos;
 using LecX.Domain.Entities;
 using MediatR;

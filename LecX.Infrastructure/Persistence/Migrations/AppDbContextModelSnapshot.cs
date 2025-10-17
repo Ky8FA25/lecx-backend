@@ -165,7 +165,16 @@ namespace LecX.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsEdited")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("LectureId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LikeCount")
                         .HasColumnType("int");
 
                     b.Property<int?>("ParentCmtId")
@@ -532,7 +541,22 @@ namespace LecX.Infrastructure.Migrations
                         .HasPrecision(10, 3)
                         .HasColumnType("decimal(10,3)");
 
+                    b.Property<string>("CheckoutUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
                     b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("GatewayTransactionId")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("OrderCode")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("PaymentDate")
@@ -934,7 +958,6 @@ namespace LecX.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("longtext");
 
@@ -943,7 +966,7 @@ namespace LecX.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
-                    b.Property<DateTime>("Dob")
+                    b.Property<DateTime?>("Dob")
                         .HasColumnType("date");
 
                     b.Property<string>("Email")
@@ -959,11 +982,9 @@ namespace LecX.Infrastructure.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Gender")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
@@ -993,7 +1014,6 @@ namespace LecX.Infrastructure.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ProfileImagePath")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(512)");
 

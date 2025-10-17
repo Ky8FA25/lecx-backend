@@ -19,6 +19,7 @@ namespace LecX.WebApi.Endpoints.Comments.Delete
                 s.Response(400, "Delete failed");
             });
             Description(d => d.WithTags("Comments"));
+            AllowAnonymous();
         }
 
         public override async Task HandleAsync(DeleteCommentRequest req, CancellationToken ct)

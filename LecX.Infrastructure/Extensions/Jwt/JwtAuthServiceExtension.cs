@@ -1,5 +1,5 @@
-﻿using LecX.Application.Abstractions.InternalService.Sercurity;
-using LecX.Infrastructure.InternalService.Sercurity;
+﻿using LecX.Application.Abstractions.InternalServices.Identity;
+using LecX.Infrastructure.InternalServices.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

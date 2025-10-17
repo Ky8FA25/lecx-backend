@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using LecX.Application.Abstractions;
-using LecX.Application.Common.Pagination;
+using LecX.Application.Abstractions.Persistence;
+using LecX.Application.Common.Dtos;
 using LecX.Application.Features.Courses.CourseDtos;
 using LecX.Domain.Entities;
 using MediatR;
