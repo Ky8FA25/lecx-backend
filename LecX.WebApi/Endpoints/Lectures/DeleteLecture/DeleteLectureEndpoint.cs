@@ -1,5 +1,4 @@
 ﻿using FastEndpoints;
-using LecX.Application.Features.CourseMaterials.DeleteCourseMaterial;
 using LecX.Application.Features.Lectures.DeleteLecture;
 using MediatR;
 
@@ -13,7 +12,7 @@ namespace LecX.WebApi.Endpoints.Lectures.DeleteLecture
 
             Summary(s =>
             {
-                s.Summary = "Delete a course material by ID";
+                s.Summary = "Delete a lecture by ID";
             });
             Roles("Admin", "Instructor");
         }

@@ -21,14 +21,7 @@
 		<Folder Include="Features\Courses\GetAllCourse\" />
 		<Folder Include="Features\Courses\GetCourseById\" />
 		<Folder Include="Features\Courses\UpdateCourse\" />
-		<Folder Include="Features\Lectures\GetLectureById\" />
-		<Folder Include="Features\Lectures\GetLecturesCompletedByUser\" />
-		<Folder Include="Features\Lectures\DeleteLectureFile\" />
-		<Folder Include="Features\Lectures\CreateLectureCompletion\" />
-		<Folder Include="Features\Lectures\DeleteLectureCompletion\" />
-		<Folder Include="Features\Lectures\CreateLectureFile\" />
 		<Folder Include="Features\Lectures\GetStudentCompletedLecture\" />
-		<Folder Include="Features\Lectures\UpdateLectureFile\" />
 	</ItemGroup>
 
 	<ItemGroup>

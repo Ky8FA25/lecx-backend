@@ -16,6 +16,7 @@ namespace LecX.Application.Features.Lectures.DeleteLecture
                     return new DeleteLectureResponse(false, "LectureId not found");
                 }
                 db.Set<Lecture>().Remove(lecture);
+                await db.SaveChangesAsync(ct);
                 return new DeleteLectureResponse(true, "Delete lecture successfully!");
             }
             catch (Exception ex)
