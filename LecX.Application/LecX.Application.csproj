@@ -25,6 +25,7 @@
 		<Folder Include="Features\Courses\DeleteCourse\" />
 		<Folder Include="Features\Courses\GetCourseById\" />
 		<Folder Include="Features\Courses\UpdateCourse\" />
+		<Folder Include="Features\Lectures\GetStudentCompletedLecture\" />
 	</ItemGroup>
 
 	<ItemGroup>
