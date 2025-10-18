@@ -2,37 +2,35 @@
 using FastEndpoints;
 using LecX.Application.Abstractions.ExternalServices.Mail;
 using LecX.Application.Features.Auth.Register;
+using LecX.WebApi.Endpoints.Auth.ConfirmEmail;
 using MediatR;
 
-namespace LecX.WebApi.Endpoints.Auth.Register;
-
-public sealed class RegisterEndpoint(
-    ISender sender,
-    IMailService mail,
-    IEmailTemplateService emailTpl,
-    ILogger<RegisterEndpoint> logger,
-    AutoMapper.IMapper mapper
-    )
-    : Endpoint<RegisterRequest, RegisterResponse>
+namespace LecX.WebApi.Endpoints.Auth.Register
 {
-    public override void Configure()
+    public sealed class RegisterEndpoint(
+        ISender sender,
+        IMailService mail,
+        IEmailTemplateService emailTpl,
+        ILogger<RegisterEndpoint> logger,
+        AutoMapper.IMapper mapper
+        )
+        : Endpoint<RegisterRequest, RegisterResponse>
     {
-        Post("/api/auth/register");
-        AllowAnonymous();
-        Description(d => d.WithTags("Auth"));
-    }
+        public override void Configure()
+        {
+            Post("/api/auth/register");
+            AllowAnonymous();
+            Description(d => d.WithTags("Auth"));
+        }
 
-    public override async Task HandleAsync(RegisterRequest req, CancellationToken ct)
-    {
-        try
+        public override async Task HandleAsync(RegisterRequest req, CancellationToken ct)
         {
             var cmd = mapper.Map<RegisterCommand>(req);
-
             var result = await sender.Send(cmd, ct);
 
             var reqHttp = HttpContext.Request;
             var scheme = reqHttp.Scheme;
-            var host = reqHttp.Host.Value;      
+            var host = reqHttp.Host.Value;
             var basePath = reqHttp.PathBase.Value;
 
             var confirmUrl = $"{reqHttp.Scheme}://{host}{basePath}{ConfirmEmailEndpoint.Route}"
@@ -60,21 +58,8 @@ public sealed class RegisterEndpoint(
 
                 Message = "Registration successful. Please check your email to confirm your account.",
                 ConfirmUrl = confirmUrl
-            }, 
+            },
             ct);
-        }
-        catch (InvalidOperationException ex)
-        {
-            await SendAsync(new RegisterResponse
-            {
-                Message = ex.Message
-            }, StatusCodes.Status400BadRequest, ct);
-        }
-        catch (Exception ex)
-        {
-            Logger?.LogError(ex, "Register failed");
-            HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await HttpContext.Response.WriteAsJsonAsync(new { message = "Unexpected server error" }, ct);
         }
     }
 }

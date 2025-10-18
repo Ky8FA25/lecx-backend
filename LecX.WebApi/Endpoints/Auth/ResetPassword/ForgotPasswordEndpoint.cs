@@ -26,7 +26,7 @@ namespace LecX.WebApi.Endpoints.Auth.ResetPassword
         public override async Task HandleAsync(ForgotPasswordRequest req, CancellationToken ct)
         {
             var user = await userManager.FindByEmailAsync(req.Email);
-            if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
+            if (user == null || !await userManager.IsEmailConfirmedAsync(user))
             {
                 await SendOkAsync(new { message = "If your email is registered, you will receive a password reset email." }, ct);
                 return;
@@ -36,8 +36,8 @@ namespace LecX.WebApi.Endpoints.Auth.ResetPassword
             var rawToken = await userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(rawToken));
 
-            var feBaseUrl = config.GetValue<string>("Frontend:BaseUrl") ?? "";
-            var feResetPath = config.GetValue<string>("Frontend:ResetPath") ?? "/reset-password";
+            var feBaseUrl = (config["Frontend:BaseUrl"] ?? string.Empty).TrimEnd('/');
+            var feResetPath = (config["Frontend:ResetPath"] ?? "/reset-password").Trim();
 
             // chuẩn hoá
             feBaseUrl = feBaseUrl.TrimEnd('/');

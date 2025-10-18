@@ -15,7 +15,10 @@ namespace LecX.WebApi.Middleware
                 NotFoundException => (404, "app/not-found", "Not Found", ex.Message),
                 ForbiddenException => (403, "app/forbidden", "Forbidden", ex.Message),
                 UnauthorizedException => (401, "auth/unauthorized", "Unauthorized", ex.Message),
+                UnauthorizedAccessException => (401, "auth/unauthorized-access", "Unauthorized Access", ex.Message),
                 InvalidOperationException => (400, "app/invalid-operation", "Invalid Operation", ex.Message),
+                FormatException => (400, "app/invalid-format", "Invalid Format", ex.Message),
+
                 // dữ liệu
                 ConcurrencyException => (409, "app/concurrency", "Concurrency conflict", ex.Message),
                 DbUpdateConcurrencyException
