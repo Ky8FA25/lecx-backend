@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LecX.Application.Abstractions.Persistence;
+using LecX.Application.Common.Execption;
 using LecX.Application.Features.Comments.Common;
 using LecX.Domain.Entities;
 using MediatR;
@@ -14,10 +16,13 @@ namespace LecX.Application.Features.Comments.CreateComment
     {
         public async Task<CreateCommentResponse> Handle(CreateCommentRequest req, CancellationToken ct)
         {
+            if (string.IsNullOrWhiteSpace(req.UserId))
+                throw new ForbiddenException("Unauthorized");
+
             var lectureExists = await db.Set<Lecture>()
                 .AnyAsync(x => x.LectureId == req.LectureId, ct);
             if (!lectureExists)
-                return new("Lecture not found");
+                throw new NotFoundException("Lecture not found");
 
             if (req.ParentCmtId is not null)
             {
@@ -27,24 +32,28 @@ namespace LecX.Application.Features.Comments.CreateComment
                         c.CommentId == req.ParentCmtId, ct);
 
                 if (parent is null || parent.IsDeleted)
-                    return new("Parent comment invalid");
+                    throw new InvalidOperationException("Parent comment invalid");
             }
 
             var comment = mapper.Map<Comment>(req);
             await db.Set<Comment>().AddAsync(comment, ct);
 
-            try
+            if (req.File is not null)
             {
-                var affected = await db.SaveChangesAsync(ct);
+                var commentFile = mapper.Map<CommentFile>(req.File);
+                commentFile.Comment = comment;
+                await db.Set<CommentFile>().AddAsync(commentFile, ct);
+            }
 
-                return affected > 0
-                    ? new("Success", true, mapper.Map<CommentDto>(comment))
-                    : new("Failed");
-            }
-            catch (DbUpdateException)
-            {
-                return new("Error while creating comment");
-            }
+            await db.SaveChangesAsync(ct);
+
+            var created = await db.Set<Comment>()
+                .AsNoTracking()
+                .Where(c => c.CommentId == comment.CommentId)
+                .ProjectTo<CommentDto>(mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync(ct);
+
+            return new("Success", true, created);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace LecX.Application.Commons.Constants;
 
-public static class StoragePaths
+public static class GoogleStoragePaths
 {
     public const string PublicRoot = "public";
     public const string PrivateRoot = "private";
