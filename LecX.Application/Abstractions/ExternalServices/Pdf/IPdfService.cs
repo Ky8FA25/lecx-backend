@@ -2,6 +2,12 @@
 {
     public interface IPdfService
     {
-        byte[] GenerateCertificate(string fullName, string courseName, DateTime issueDate);
+        Task<Stream> GenerateCertificateAsync(
+              string studentName,
+              string courseName,
+              string completionDate,
+              string instructorName,
+              string instructorTitle,
+              string verifyUrl);
     }
 }

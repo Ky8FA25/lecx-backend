@@ -9,7 +9,7 @@ namespace LecX.WebApi.Endpoints.Storage.DeleteObject
         public override void Configure()
         {
             Delete("/api/storage/delete-object");
-            Roles("Admin");
+            //Roles("Admin");
             Summary(s =>
             {
                 s.Summary = "Xoá object khỏi GCS";

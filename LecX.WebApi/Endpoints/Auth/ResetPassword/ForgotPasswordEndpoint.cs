@@ -12,8 +12,8 @@ namespace LecX.WebApi.Endpoints.Auth.ResetPassword
         UserManager<User> userManager,
         IMailTemplateService mailTpl,
         IConfiguration config,
-        IMailService mail)
-      : Endpoint<ForgotPasswordRequest>
+        IMailService mail
+        ) : Endpoint<ForgotPasswordRequest>
     {
         public override void Configure()
         {

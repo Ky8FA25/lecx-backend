@@ -16,7 +16,7 @@ namespace LecX.WebApi.Middleware
                 ForbiddenException => (403, "app/forbidden", "Forbidden", ex.Message),
                 UnauthorizedException => (401, "auth/unauthorized", "Unauthorized", ex.Message),
                 UnauthorizedAccessException => (401, "auth/unauthorized-access", "Unauthorized Access", ex.Message),
-                InvalidOperationException => (400, "app/invalid-operation", "Invalid Operation", ex.Message),
+                //InvalidOperationException => (400, "app/invalid-operation", "Invalid Operation", ex.Message),
                 FormatException => (400, "app/invalid-format", "Invalid Format", ex.Message),
 
                 // dữ liệu
@@ -26,7 +26,7 @@ namespace LecX.WebApi.Middleware
                 DbUpdateException => (500, "server/db-error", "Database error", "Database error occurred."),
 
                 // mặc định
-                _ => (500, "server/unexpected", "Internal Server Error", "An unexpected error occurred.")
+                //_ => (500, "server/unexpected", "Internal Server Error", "An unexpected error occurred.")
             };
 
             logger.LogError(ex, "Error at {Path} → {Status}", ctx.Request.Path, status);
