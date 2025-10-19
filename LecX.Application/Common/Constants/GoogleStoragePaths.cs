@@ -1,6 +1,6 @@
 ﻿namespace LecX.Application.Commons.Constants;
 
-public static class StoragePaths
+public static class GoogleStoragePaths
 {
     public const string PublicRoot = "public";
     public const string PrivateRoot = "private";
@@ -9,7 +9,7 @@ public static class StoragePaths
     public static class Public
     {
         public const string AssignmentFiles = $"{PublicRoot}/assignment-files";
-        public const string AssignmentSubmissions = $"{PublicRoot}/assignment-submissons"; // chú ý đúng chính tả folder
+        public const string AssignmentSubmissions = $"{PublicRoot}/assignment-submissions"; // chú ý đúng chính tả folder
         public const string CommentFiles = $"{PublicRoot}/comment-files";
         public const string CourseCoverImages = $"{PublicRoot}/course-cover-images";
         public const string CourseMaterials = $"{PublicRoot}/course-materials";
@@ -17,6 +17,7 @@ public static class StoragePaths
         public const string LectureVideos = $"{PublicRoot}/lecture-videos";
         public const string QuestionImages = $"{PublicRoot}/question-images";
         public const string UserAvatars = $"{PublicRoot}/user-avatars";
+        public const string DefaultAvatars = $"{PublicRoot}/user-avatars/default-avatar.png";
     }
 
     public static class Private

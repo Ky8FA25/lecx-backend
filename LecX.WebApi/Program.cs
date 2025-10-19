@@ -1,13 +1,14 @@
-﻿using ct.backend.Features.Auth.Common;
-using FastEndpoints;
+﻿using FastEndpoints;
 using FastEndpoints.Swagger;
 using LecX.Infrastructure.Extensions;
+using LecX.WebApi.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
 
 namespace WebApi
 {
     public class Program
     {
+        [Obsolete]
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +20,6 @@ namespace WebApi
                 options.AppendTrailingSlash = false;
             });
             builder.Services.AddCoreInfrastructure(builder.Configuration);
-            builder.Services.AddScoped<IEmailTemplateService, EmailTemplateService>();
             builder.Services.AddCors(opt =>
             {
                 opt.AddDefaultPolicy(p => p
@@ -36,7 +36,12 @@ namespace WebApi
                 o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
                 o.ForwardLimit = 2;
                 o.RequireHeaderSymmetry = false;
+                //o.KnownNetworks.Clear();
+                //o.KnownProxies.Clear();
             });
+
+            builder.Services.AddProblemDetails();
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
             var app = builder.Build();
 
@@ -50,11 +55,9 @@ namespace WebApi
             //    var seeder = new DataSeeder(ctx, roleManager, userManager);
             //    await seeder.SeedAllAsync();
             //}
-
-            app.UseForwardedHeaders();
-
+            app.UseExceptionHandler();
             app.UseHttpsRedirection();
-
+            app.UseForwardedHeaders();
             app.UseCors();
 
             app.UseAuthentication();

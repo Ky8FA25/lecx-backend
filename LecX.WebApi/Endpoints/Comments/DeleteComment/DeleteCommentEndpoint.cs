@@ -1,11 +1,14 @@
 ﻿using FastEndpoints;
 using LecX.Application.Features.Comments.DeleteComment;
 using MediatR;
+using System.Security.Claims;
 
 namespace LecX.WebApi.Endpoints.Comments.Delete
 {
-    public class DeleteCommentEndpoint(ISender sender)
-        : Endpoint<DeleteCommentRequest, DeleteCommentResponse>
+    public class DeleteCommentEndpoint(
+        ISender sender,
+        IHttpContextAccessor httpContext
+        ) : Endpoint<DeleteCommentRequest, DeleteCommentResponse>
     {
         public override void Configure()
         {
@@ -13,33 +16,29 @@ namespace LecX.WebApi.Endpoints.Comments.Delete
             Summary(s =>
             {
                 s.Summary = "Delete a comment by ID";
-                s.Description = "Deletes a specific comment by its unique ID.";
+                s.Description = "Soft-delete a specific comment by its unique ID.";
                 s.Response(200, "Deleted successfully");
+                s.Response(403, "Forbidden");
                 s.Response(404, "Comment not found");
                 s.Response(400, "Delete failed");
             });
             Description(d => d.WithTags("Comments"));
-            AllowAnonymous();
         }
 
         public override async Task HandleAsync(DeleteCommentRequest req, CancellationToken ct)
         {
-            try
+            var userId = httpContext.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            req.UserId = userId!;
+
+            var result = await sender.Send(req, ct);
+
+            if (result.Success)
             {
-                var result = await sender.Send(req, ct);
-                await SendAsync(
-                    result, result.Success ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest, ct);
+                await SendOkAsync(result, ct);
+                return;
             }
-            catch (KeyNotFoundException ex)
-            {
-                await SendAsync(
-                    new () { Message = ex.Message}, StatusCodes.Status404NotFound, ct);
-            }
-            catch (Exception ex)
-            {
-                await SendAsync(
-                    new () { Message = ex.Message }, StatusCodes.Status500InternalServerError, ct);
-            }
+
+            await SendAsync(result, StatusCodes.Status400BadRequest, ct);
         }
     }
 }

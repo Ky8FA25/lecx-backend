@@ -1,10 +1,15 @@
 ﻿using FastEndpoints;
 using LecX.Application.Features.Comments.UpdateComment;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace LecX.WebApi.Endpoints.Comments.UpdateComment
 {
-    public class UpdateCommentEndpoint(ISender sender) : Endpoint<UpdateCommentRequest, UpdateCommentResponse>
+    public class UpdateCommentEndpoint(
+        ISender sender,
+        IHttpContextAccessor httpContext
+        ) : Endpoint<UpdateCommentRequest, UpdateCommentResponse>
     {
         public override void Configure()
         {
@@ -19,21 +24,11 @@ namespace LecX.WebApi.Endpoints.Comments.UpdateComment
         }
         public override async Task HandleAsync(UpdateCommentRequest req, CancellationToken ct)
         {
-            try
-            {
-                var res = await sender.Send(req, ct);
-                await SendOkAsync(res, ct);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                await SendAsync(
-                    new() { Message = ex.Message }, StatusCodes.Status404NotFound, ct);
-            }
-            catch (Exception ex)
-            {
-                await SendAsync(
-                    new() { Message = ex.Message }, StatusCodes.Status500InternalServerError, ct);
-            }
+            var userId = httpContext.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            req.UserId = userId!;
+
+            var res = await sender.Send(req, ct);
+            await SendOkAsync(res, ct);
         }
     }
 }

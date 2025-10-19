@@ -126,7 +126,7 @@ namespace LecX.Infrastructure.Migrations
                     b.ToTable("Categories", (string)null);
                 });
 
-            modelBuilder.Entity("LecX.Domain.Entities.Certificate", b =>
+            modelBuilder.Entity("LecX.Domain.Entities.Certificates", b =>
                 {
                     b.Property<int>("CertificateId")
                         .ValueGeneratedOnAdd()
@@ -1221,7 +1221,7 @@ namespace LecX.Infrastructure.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("LecX.Domain.Entities.Certificate", b =>
+            modelBuilder.Entity("LecX.Domain.Entities.Certificates", b =>
                 {
                     b.HasOne("LecX.Domain.Entities.Course", "Course")
                         .WithMany("Certificates")

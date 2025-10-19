@@ -21,16 +21,8 @@ namespace LecX.WebApi.Endpoints.Comments.GetCommentById
         }
         public override async Task HandleAsync(GetCommentByIdRequest req, CancellationToken ct)
         {
-            try
-            {
-                var response = await sender.Send(req, ct);
-                await SendOkAsync(response, ct);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                await SendAsync(
-                    new () { Message = ex.Message }, StatusCodes.Status404NotFound, ct);
-            }
+            var response = await sender.Send(req, ct);
+            await SendOkAsync(response, ct);
         }
     }
 }
