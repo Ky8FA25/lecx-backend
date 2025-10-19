@@ -1,5 +1,4 @@
-﻿using ct.backend.Features.Auth.Common;
-using FastEndpoints;
+﻿using FastEndpoints;
 using FastEndpoints.Swagger;
 using LecX.Infrastructure.Extensions;
 using LecX.WebApi.Middleware;
@@ -21,7 +20,6 @@ namespace WebApi
                 options.AppendTrailingSlash = false;
             });
             builder.Services.AddCoreInfrastructure(builder.Configuration);
-            builder.Services.AddScoped<IEmailTemplateService, EmailTemplateService>();
             builder.Services.AddCors(opt =>
             {
                 opt.AddDefaultPolicy(p => p

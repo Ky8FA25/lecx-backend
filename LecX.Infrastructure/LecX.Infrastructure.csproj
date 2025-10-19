@@ -38,6 +38,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="ExternalServices/Mail/Templates/**/*.html" />
+	</ItemGroup>
+	
+	<ItemGroup>
 	  <Folder Include="ExternalServices\PayOS\" />
 	</ItemGroup>
 </Project>

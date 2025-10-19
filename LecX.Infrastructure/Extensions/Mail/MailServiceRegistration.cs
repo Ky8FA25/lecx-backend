@@ -15,6 +15,7 @@ public static class MailServiceRegistration
         var mailConfigs = config.GetSection("MailSettings");
         services.Configure<MailSettings>(mailConfigs);
         services.AddTransient<IMailService, MailService>();
+        services.AddScoped<IMailTemplateService, MailTemplateService>();
 
         return services;
     }

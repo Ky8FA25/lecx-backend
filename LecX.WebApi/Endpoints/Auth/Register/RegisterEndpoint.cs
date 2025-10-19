@@ -1,5 +1,4 @@
-﻿using ct.backend.Features.Auth.Common;
-using FastEndpoints;
+﻿using FastEndpoints;
 using LecX.Application.Abstractions.ExternalServices.Mail;
 using LecX.Application.Features.Auth.Register;
 using LecX.WebApi.Endpoints.Auth.ConfirmEmail;
@@ -10,7 +9,7 @@ namespace LecX.WebApi.Endpoints.Auth.Register
     public sealed class RegisterEndpoint(
         ISender sender,
         IMailService mail,
-        IEmailTemplateService emailTpl,
+        IMailTemplateService mailTpl,
         ILogger<RegisterEndpoint> logger,
         AutoMapper.IMapper mapper
         )
@@ -39,8 +38,7 @@ namespace LecX.WebApi.Endpoints.Auth.Register
                            + (string.IsNullOrEmpty(req.ReturnUrl) ? "" : $"&returnUrl={Uri.EscapeDataString(req.ReturnUrl)}");
 
             // render template + gửi mail
-            var body = await emailTpl.BuildEmailBodyAsync(
-                templateFileName: "ConfirmEmailTemplate.html",
+            var body = await mailTpl.BuildConfirmEmailAsync(
                 confirmationUrl: confirmUrl!,
                 email: result.Email);
 

@@ -1,5 +1,4 @@
-﻿using ct.backend.Features.Auth.Common;
-using FastEndpoints;
+﻿using FastEndpoints;
 using LecX.Application.Abstractions.ExternalServices.Mail;
 using LecX.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +10,7 @@ namespace LecX.WebApi.Endpoints.Auth.ResetPassword
 {
     public sealed class ForgotPasswordEndpoint(
         UserManager<User> userManager,
-        IEmailTemplateService emailTpl,
+        IMailTemplateService mailTpl,
         IConfiguration config,
         IMailService mail)
       : Endpoint<ForgotPasswordRequest>
@@ -48,11 +47,10 @@ namespace LecX.WebApi.Endpoints.Auth.ResetPassword
                            + $"&token={encodedToken}";
             //+ (string.IsNullOrEmpty(returnUrl) ? "" : $"&returnUrl={Uri.EscapeDataString(returnUrl)}");
 
-            var emailBody = await emailTpl.BuildEmailBodyAsync(
-                          templateFileName: "ResetPasswordTemplate.html",
-                          confirmationUrl: resetUrl!,
-                          email: user.Email
-                      );
+            var emailBody = await mailTpl.BuildResetPasswordEmailAsync(
+                      resetUrl: resetUrl!,
+                      email: user.Email
+                  );
 
             // 4. Gửi mail
             await mail.SendMailAsync(new MailContent
