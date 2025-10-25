@@ -23,7 +23,18 @@
 		<Folder Include="Features\Courses\DeleteCourse\" />
 		<Folder Include="Features\Courses\GetCourseById\" />
 		<Folder Include="Features\Courses\UpdateCourse\" />
-		<Folder Include="Features\Lectures\GetStudentCompletedLecture\" />
+		<Folder Include="Features\Tests\QuestionHandler\CreateQuestion\" />
+		<Folder Include="Features\Tests\QuestionHandler\DeleteQuestion\" />
+		<Folder Include="Features\Tests\QuestionHandler\GetQuestionsByTest\" />
+		<Folder Include="Features\Tests\QuestionHandler\GetQuestionById\" />
+		<Folder Include="Features\Tests\QuestionHandler\GetQuestionsForAttempTest\" />
+		<Folder Include="Features\Tests\QuestionHandler\CreateListQuestions\" />
+		<Folder Include="Features\Tests\QuestionHandler\UpdateQuestion\" />
+		<Folder Include="Features\Tests\TestScoreHandler\CreateTestScore\" />
+		<Folder Include="Features\Tests\TestScoreHandler\DeleteTestScore\" />
+		<Folder Include="Features\Tests\TestScoreHandler\GetTestScoresByUser\" />
+		<Folder Include="Features\Tests\TestScoreHandler\GetTestScoreById\" />
+		<Folder Include="Features\Tests\TestScoreHandler\GetStudentScoresByTest\" />
 	</ItemGroup>
 
 	<ItemGroup>
