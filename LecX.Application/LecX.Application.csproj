@@ -23,11 +23,6 @@
 		<Folder Include="Features\Courses\DeleteCourse\" />
 		<Folder Include="Features\Courses\GetCourseById\" />
 		<Folder Include="Features\Courses\UpdateCourse\" />
-		<Folder Include="Features\Tests\TestScoreHandler\CreateTestScore\" />
-		<Folder Include="Features\Tests\TestScoreHandler\DeleteTestScore\" />
-		<Folder Include="Features\Tests\TestScoreHandler\GetTestScoresByUser\" />
-		<Folder Include="Features\Tests\TestScoreHandler\GetTestScoreById\" />
-		<Folder Include="Features\Tests\TestScoreHandler\GetStudentScoresByTest\" />
 	</ItemGroup>
 
 	<ItemGroup>

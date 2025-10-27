@@ -3,6 +3,6 @@
     public class AnswerDTO
     {
         public int QuestionId { get; set; }
-        public string SelectedAnswer { get; set; }
+        public required string SelectedAnswer { get; set; }
     }
 }
