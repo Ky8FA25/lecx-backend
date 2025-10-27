@@ -1,9 +1,11 @@
-﻿using LecX.Application.Abstractions.Persistence;
+﻿using LecX.Application.Abstractions.ExternalServices.Mail;
+using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Features.Payment.Common;
 using LecX.Domain.Entities;
 using LecX.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Net.payOS;
 
 namespace LecX.Application.Features.Payment.PaymentSuccess
@@ -12,11 +14,23 @@ namespace LecX.Application.Features.Payment.PaymentSuccess
     {
         private readonly PayOS _payOs;
         private readonly IAppDbContext _db;
+        private readonly IMailTemplateService _mailTpl;
+        private readonly IMailService _mail;
+        private readonly IConfiguration _config;
 
-        public PaymentSuccessCommandHandler(PayOS payOs, IAppDbContext db)
+
+        public PaymentSuccessCommandHandler(
+            PayOS payOs,
+            IAppDbContext db,
+            IMailTemplateService mailTpl,
+            IMailService mail,
+            IConfiguration config)
         {
             _payOs = payOs;
             _db = db;
+            _mailTpl = mailTpl;
+            _mail = mail;
+            _config = config;
         }
 
         public async Task<PaymentResult> Handle(PaymentSuccessCommand request, CancellationToken ct)
@@ -35,7 +49,7 @@ namespace LecX.Application.Features.Payment.PaymentSuccess
 
                 // Enroll student
                 var alreadyEnrolled = await _db.Set<StudentCourse>()
-                    .AnyAsync(sc => sc.StudentId == payment.StudentId && sc.CourseId == payment.CourseId, ct);               
+                    .AnyAsync(sc => sc.StudentId == payment.StudentId && sc.CourseId == payment.CourseId, ct);
 
                 if (!alreadyEnrolled)
                 {
@@ -54,6 +68,28 @@ namespace LecX.Application.Features.Payment.PaymentSuccess
                         course.NumberOfStudents += 1;
 
                     await _db.SaveChangesAsync(ct);
+
+                    var student = await _db.Set<User>()
+                        .FirstOrDefaultAsync(u => u.Id == payment.StudentId, ct);
+
+                    if (course != null && student != null)
+                    {
+                        var feBaseUrl = (_config["Frontend:BaseUrl"] ?? string.Empty).TrimEnd('/');
+
+                        var emailBody = await _mailTpl.BuildWelcomeToCourseEmailAsync(
+                            studentName: student.FirstName + student.LastName,
+                            courseName: course.Title,
+                            courseUrl: $"{feBaseUrl}/course/{course?.CourseId}",
+                            email: student?.Email!
+                        );
+
+                        await _mail.SendMailAsync(new MailContent
+                        {
+                            To = student?.Email!,
+                            Subject = $"You’re enrolled! Welcome to {course?.Title}",
+                            Body = emailBody
+                        });
+                    }
                 }
             }
 
@@ -63,7 +99,7 @@ namespace LecX.Application.Features.Payment.PaymentSuccess
             {
                 Message = "Payment success & student enrolled",
                 OrderCode = request.OrderCode,
-                Status = info.status,                
+                Status = info.status,
                 Description = description
             };
         }
