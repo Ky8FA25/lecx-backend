@@ -20,25 +20,38 @@ namespace LecX.Application.Features.Comments.GetCommentsByLecture
         /// </summary>
         public async Task<GetCommentsByLectureResponse> Handle(GetCommentsByLectureRequest req, CancellationToken ct)
         {
-            try
-            {
-                var query = context.Set<Comment>()
-                  .AsNoTracking()
-                  .Where(c =>
-                         c.LectureId == req.LectureId &&
-                         c.ParentCmtId == req.ParentCmtId && !c.IsDeleted)
-                  .OrderBy(c => c.Timestamp)
-                  .ProjectTo<CommentDto>(mapper.ConfigurationProvider);
+            var comments = context.Set<Comment>().AsNoTracking();
 
-                var page = await PaginatedList<CommentDto>.CreateAsync(
-                    query, req.PageIndex, req.PageSize, ct);
+            IQueryable<Comment> baseQuery;
 
-                return new GetCommentsByLectureResponse { Data = page, Success = true };
-            }
-            catch (Exception ex)
+            if (req.ParentCmtId != null) // đang lấy replies
             {
-                return new() { Message = ex.Message, Success = false };
+                // 1) Check parent còn sống (tránh subquery trên từng row)
+                var parentAlive = await comments.AnyAsync(p =>
+                    p.CommentId == req.ParentCmtId &&
+                    p.LectureId == req.LectureId &&
+                    !p.IsDeleted, ct);
+
+                if (!parentAlive)
+                {
+                    // parent đã xoá → trả trang rỗng (hoặc throw NotFound tuỳ rule)
+                    var empty = new PaginatedList<CommentDto>(
+                        new List<CommentDto>(), 0, req.PageIndex, req.PageSize);
+                    return new() { Data = empty, Success = true };
+                }
             }
+
+            baseQuery = comments.Where(c =>
+                c.LectureId == req.LectureId &&
+                c.ParentCmtId == req.ParentCmtId &&
+                !c.IsDeleted);
+
+            var query = baseQuery
+                .OrderByDescending(c => c.Timestamp).ThenBy(c => c.CommentId) // order ổn định cho paging
+                .ProjectTo<CommentDto>(mapper.ConfigurationProvider);
+
+            var page = await PaginatedList<CommentDto>.CreateAsync(query, req.PageIndex, req.PageSize, ct);
+            return new() { Data = page, Success = true };
         }
     }
 }

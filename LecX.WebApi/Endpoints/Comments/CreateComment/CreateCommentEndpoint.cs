@@ -23,19 +23,11 @@ namespace LecX.WebApi.Endpoints.Comments.CreateComment
         }
         public override async Task HandleAsync(CreateCommentRequest req, CancellationToken ct)
         {
-            try
-            {
-                var userId = httpContext.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                req.UserId = userId!;
+            var userId = httpContext.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            req.UserId = userId!;
 
-                var res = await sender.Send(req, ct);
-                await SendOkAsync(res, ct);
-            }
-            catch (Exception ex)
-            {
-                await SendAsync(
-                    new (ex.Message), StatusCodes.Status500InternalServerError,  ct);
-            }
+            var res = await sender.Send(req, ct);
+            await SendOkAsync(res, ct);
         }
     }
 }
