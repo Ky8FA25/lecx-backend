@@ -11,7 +11,7 @@ namespace LecX.WebApi.Endpoints.StudentCourses.GetStudentCourseByStudent
     {
         public override void Configure()
         {
-            Get("/api/student-courses/check");
+            Get("/api/student-courses/check-exist");
             Summary(s =>
             {
                 s.Summary = "Kiểm tra xem sinh viên đã mua khóa học hay chưa";

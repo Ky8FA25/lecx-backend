@@ -33,10 +33,7 @@ namespace LecX.Application.Features.StudentCourses.GetStudentCourseByStudent
             // Đã mua khóa học
             return new GetStudentCourseByStudentResponse
             {
-                IsEnrolled = true,
-                Progress = studentCourse.Progress,
-                EnrollmentDate = studentCourse.EnrollmentDate,
-                CompletionDate = studentCourse.CompletionDate
+                IsEnrolled = true
             };
         }
     }
