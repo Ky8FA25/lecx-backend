@@ -18,5 +18,6 @@ namespace LecX.Application.Features.Courses.CourseDtos
         public DateTime CreateDate { get; set; }
         public string Level { get; set; } = default!;
         public string Status { get; set; } = default!;
+        public string? CoverImagePath { get; set; }
     }
 }
