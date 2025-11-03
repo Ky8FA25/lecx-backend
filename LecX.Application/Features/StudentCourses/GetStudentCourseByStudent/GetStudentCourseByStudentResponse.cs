@@ -3,6 +3,7 @@
     public class GetStudentCourseByStudentResponse
     {
         public bool IsEnrolled { get; set; }
+        public bool IsFree { get; set; }
         public bool Success { get; set; }
         public string? Message { get; set; }
     }

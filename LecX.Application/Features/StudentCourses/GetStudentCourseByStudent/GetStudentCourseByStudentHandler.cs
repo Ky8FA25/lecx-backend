@@ -29,11 +29,20 @@ namespace LecX.Application.Features.StudentCourses.GetStudentCourseByStudent
                     IsEnrolled = false
                 };
             }
+            if (studentCourse.Course.Price == 0)
+            {
+                return new GetStudentCourseByStudentResponse
+                {
+                    IsEnrolled = true,
+                    IsFree = true
+                };
+            }
 
             // Đã mua khóa học
             return new GetStudentCourseByStudentResponse
             {
-                IsEnrolled = true
+                IsEnrolled = true,
+                IsFree = false
             };
         }
     }
