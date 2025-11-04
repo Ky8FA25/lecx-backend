@@ -10,7 +10,7 @@ namespace LecX.WebApi.Endpoints.StudentCourses.GetCoursesFilteredByStudent
         public override void Configure()
         {
             Get("/api/student-courses/courses");
-            Summary(s => s.Summary = "Get courses of user with filtering (keyword, category, status)");
+            Summary(s => s.Summary = "Get courses of user with filtering (keyword, category, level, status)");
         }
         public override async Task HandleAsync(GetCoursesFilteredByStudentRequest req, CancellationToken ct)
         {
