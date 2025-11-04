@@ -34,6 +34,10 @@ namespace LecX.Application.Features.StudentCourses.GetCoursesFilteredByStudent
                 if (request.CategoryId.HasValue && request.CategoryId > 0)
                     query = query.Where(c => c.Course.CategoryId == request.CategoryId);
 
+                // 🔹 Lọc theo Level
+                if (request.Level.HasValue)
+                    query = query.Where(c => c.Course.Level == request.Level.Value);
+
                 // 🔹 Lọc theo CertificateStatus
                 if (request.CertificateStatus.HasValue)
                     query = query.Where(c => c.CertificateStatus == request.CertificateStatus);

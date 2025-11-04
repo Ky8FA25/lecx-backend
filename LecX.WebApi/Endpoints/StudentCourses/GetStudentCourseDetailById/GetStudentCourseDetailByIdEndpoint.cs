@@ -9,7 +9,7 @@ namespace LecX.WebApi.Endpoints.StudentCourses.GetStudentCourseDetailById
         public override void Configure()
         {
             Get("/api/student-courses/{studentCourseId}");
-            Summary(s => s.Summary = "Get students of a course with filtering (keyword, status)");
+            Summary(s => s.Summary = "Get course detail of a student by ID");
         }
         public override async Task HandleAsync(CancellationToken ct)
         {
