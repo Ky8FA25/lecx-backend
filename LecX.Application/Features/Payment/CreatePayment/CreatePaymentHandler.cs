@@ -53,10 +53,8 @@ namespace LecX.Application.Features.Payment.CreatePayment
 
             // Tạo ItemData và PaymentData
             var item = new ItemData(course.Title, 1, (int)course.Price);
-            var requestInfo = httpContext.HttpContext!.Request;
-            var baseUrl = $"{requestInfo.Scheme}://{requestInfo.Host}";
-            var returnUrl = $"{baseUrl}/api/payments/success?orderCode={orderCode}";
-            var cancelUrl = $"{baseUrl}/api/payments/cancel?orderCode={orderCode}";
+            var returnUrl = $"{request.ReturnUrl}";
+            var cancelUrl = $"{request.CancelUrl}";
 
             var paymentData = new PaymentData(
                 orderCode,
