@@ -13,6 +13,6 @@ namespace LecX.Application.Features.Users.UserEditProfile
         public DateTime? Dob { get; set; }
         public Gender? Gender { get; set; }
 
-        public IFormFile? ProfileImage { get; set; }
+        public string? ProfileImage { get; set; }
     }
 }

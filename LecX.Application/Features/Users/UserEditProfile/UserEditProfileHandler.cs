@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using LecX.Application.Abstractions.Persistence;
-using LecX.Application.Features.Categories.CategoryDtos;
+﻿using AutoMapper;
 using LecX.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LecX.Application.Features.Users.UserEditProfile
 {
@@ -35,7 +27,12 @@ namespace LecX.Application.Features.Users.UserEditProfile
             user.Gender = request.Gender;
             
             //user upload image
-           await userManager.UpdateAsync(user);
+            if (!string.IsNullOrEmpty(request.ProfileImage))
+            {
+                user.ProfileImagePath = request.ProfileImage;
+            }
+
+            await userManager.UpdateAsync(user);
 
             return new UserEditProfileResponse
             {
