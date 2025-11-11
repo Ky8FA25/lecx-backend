@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using LecX.Application.Abstractions.InternalServices.Certificates;
+using LecX.Application.Abstractions.InternalServices.Queues;
 using LecX.Application.Features.Courses.CreateCourse;
 using LecX.Infrastructure.Extensions.Database;
 using LecX.Infrastructure.Extensions.GoogleAuth;
@@ -9,6 +10,8 @@ using LecX.Infrastructure.Extensions.Mail;
 using LecX.Infrastructure.Extensions.PayOS;
 using LecX.Infrastructure.Extensions.Swagger;
 using LecX.Infrastructure.InternalServices.Certificates;
+using LecX.Infrastructure.InternalServices.Queues;
+using LecX.Infrastructure.Workers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -39,6 +42,12 @@ namespace LecX.Infrastructure.Extensions
                  appAssembly: typeof(ICertificateIssuanceService).Assembly,
                  infraAssembly: typeof(CertificateIssuanceService).Assembly
             );
+
+            // Certificate background workers
+            services.AddSingleton<StudentCourseCompletionQueue>();
+            services.AddSingleton<IStudentCourseCompletionQueue>(sp => sp.GetRequiredService<StudentCourseCompletionQueue>());
+            services.AddHostedService<CertificateIssueWorker>();
+
             return services;
         }
 

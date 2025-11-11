@@ -5,6 +5,7 @@ using LecX.Application.Abstractions.InternalServices.Certificates;
 using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Commons.Constants;
 using LecX.Domain.Entities;
+using LecX.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Text.RegularExpressions;
@@ -84,36 +85,66 @@ namespace LecX.Infrastructure.InternalServices.Certificates
                 );
             }
 
-            // 3) Tạo record Certificates
-            var certificate = new Certificate
+            await using var tx = await db.BeginTransactionAsync(ct);
+            try
             {
-                StudentId = studentId,
-                CourseId = courseId,
-                CompletionDate = DateTime.Now,
-                CertificateLink = savedName
-            };
-
-            await db.Set<Certificate>().AddAsync(certificate, ct);
-            await db.SaveChangesAsync(ct);
-
-            // 4) Gửi email thông báo kèm link certificate
-            if (!string.IsNullOrWhiteSpace(student?.Email))
-            {
-                var emailBody = await mailTpl.BuildCourseCompletedEmailAsync(
-                    studentName: studentName!,
-                    course?.Title ?? "Course",
-                    certificateUrl: storage.GetSignedReadUrl(savedName, TimeSpan.FromDays(7)),
-                    email: student!.Email
-                );
-
-                await mail.SendMailAsync(new MailContent
+                var existed = await db.Set<Certificate>()
+                      .FirstOrDefaultAsync(c => c.StudentId == studentId && c.CourseId == courseId, ct);
+                if (existed is not null)
                 {
-                    To = student.Email,
-                    Subject = $"LecX Certificate - {course!.Title}",
-                    Body = emailBody
-                });
+                    await tx.RollbackAsync(ct);
+                    return existed;
+                }
+
+                sc.CertificateStatus = CertificateStatus.Completed;
+                sc.CompletionDate = DateTime.Now;
+
+                var certificate = new Certificate
+                {
+                    StudentId = studentId,
+                    CourseId = courseId,
+                    CompletionDate = DateTime.Now,
+                    CertificateLink = savedName
+                };
+
+
+                await db.Set<Certificate>().AddAsync(certificate, ct);
+                await db.SaveChangesAsync(ct);
+                await tx.CommitAsync(ct);
+
+                // 4) Gửi email thông báo kèm link certificate
+                if (!string.IsNullOrWhiteSpace(student?.Email))
+                {
+                    var emailBody = await mailTpl.BuildCourseCompletedEmailAsync(
+                        studentName: studentName!,
+                        course?.Title ?? "Course",
+                        certificateUrl: storage.GetSignedReadUrl(savedName, TimeSpan.FromDays(7)),
+                        email: student!.Email
+                    );
+
+                    await mail.SendMailAsync(new MailContent
+                    {
+                        To = student.Email,
+                        Subject = $"LecX Certificate - {course!.Title}",
+                        Body = emailBody
+                    });
+                }
+
+                return certificate;
             }
-            return certificate;
+            catch (DbUpdateException)
+            {
+                await tx.RollbackAsync(ct);
+                // Nếu có unique index, có thể rơi vào đây khi race → trả cert đã tồn tại
+                return await db.Set<Certificate>()
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.StudentId == studentId && c.CourseId == courseId, ct);
+            }
+            catch
+            {
+                await tx.RollbackAsync(ct);
+                throw;
+            }
         }
 
         // --- helpers ---
@@ -160,7 +191,8 @@ namespace LecX.Infrastructure.InternalServices.Certificates
             double overallAvg = (avgAssignment + avgTest) / 2.0;
 
             // Đủ điều kiện
-            return studentCourse.Progress >= 100 && overallAvg >= 5;
+            //return studentCourse.Progress >= 100 && overallAvg >= 5;
+            return studentCourse.Progress >= 100;
         }
     }
 }
