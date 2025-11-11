@@ -2,6 +2,7 @@
 using LecX.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LecX.Infrastructure.Persistence.Data
 {
@@ -72,5 +73,17 @@ namespace LecX.Infrastructure.Persistence.Data
                 }
             }
         }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken ct = default)
+         => await base.SaveChangesAsync(ct);
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken ct = default)
+            => await Database.BeginTransactionAsync(ct);
+
+        public async Task CommitTransactionAsync(CancellationToken ct = default)
+            => await Database.CommitTransactionAsync(ct);
+
+        public async Task RollbackTransactionAsync(CancellationToken ct = default)
+            => await Database.RollbackTransactionAsync(ct);
     }
 }

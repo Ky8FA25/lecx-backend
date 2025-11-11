@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LecX.Application.Abstractions.InternalServices.Queues;
 using LecX.Application.Abstractions.Persistence;
 using LecX.Domain.Entities;
 using MediatR;
@@ -6,8 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LecX.Application.Features.Lectures.CreateLectureCompletion
 {
-    public class CreateLectureCompletionHandler(IAppDbContext db, IMapper mapper)
-        : IRequestHandler<CreateLectureCompletionRequest, CreateLectureCompletionResponse>
+    public class CreateLectureCompletionHandler(
+        IAppDbContext db,
+        IMapper mapper,
+        IStudentCourseCompletionQueue queue
+    ) : IRequestHandler<CreateLectureCompletionRequest, CreateLectureCompletionResponse>
     {
         public async Task<CreateLectureCompletionResponse> Handle(CreateLectureCompletionRequest request, CancellationToken ct)
         {
@@ -68,12 +72,19 @@ namespace LecX.Application.Features.Lectures.CreateLectureCompletion
                     .CountAsync(lc => lc.StudentId == request.StudentId && lc.Lecture.CourseId == lecture.CourseId, ct);
 
                 // Tính phần trăm hoàn thành
-                decimal progress = totalLectures > 0
+                var newProgress = totalLectures > 0
                     ? Math.Round((decimal)completedLectures / totalLectures * 100, 2)
                     : 0;
+                var oldProgress = studentCourse.Progress;
 
-                studentCourse.Progress = progress;
+                studentCourse.Progress = newProgress;
                 await db.SaveChangesAsync(ct);
+
+                if (oldProgress < 100 && newProgress >= 100)
+                {
+                    // enqueue (studentId, courseId); worker sẽ gọi IssueAsync(...)
+                    await queue.EnqueueAsync(request.StudentId, lecture.CourseId, ct);
+                }
 
                 return new CreateLectureCompletionResponse
                 {
