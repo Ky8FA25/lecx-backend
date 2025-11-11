@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<!-- ORM & Database -->
+		<PackageReference Include="FirebaseDatabase.net" Version="5.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
@@ -52,8 +53,10 @@
 		<EmbeddedResource Include="ExternalServices/Mail/Templates/**/*.html" />
 		<EmbeddedResource Include="ExternalServices/Pdf/Templates/**/*.html" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <Folder Include="ExternalServices\PayOS\" />
+	  <Compile Remove="ExternalServices\PayOS\**" />
+	  <EmbeddedResource Remove="ExternalServices\PayOS\**" />
+	  <None Remove="ExternalServices\PayOS\**" />
 	</ItemGroup>
 </Project>

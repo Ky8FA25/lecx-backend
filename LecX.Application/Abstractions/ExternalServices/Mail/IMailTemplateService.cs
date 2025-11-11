@@ -6,5 +6,6 @@
         Task<string> BuildResetPasswordEmailAsync(string resetUrl, string email);
         Task<string> BuildWelcomeToCourseEmailAsync(string studentName, string courseName, string courseUrl, string email);
         Task<string> BuildCourseCompletedEmailAsync(string studentName, string courseName, string certificateUrl, string email);
+        Task<string> BuildSendOtpEmailAsync(string otpCode, string email);
     }
 }

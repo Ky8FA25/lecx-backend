@@ -10,6 +10,7 @@ namespace LecX.Infrastructure.ExternalServices.Mail
         private const string TEMPLATE_RESET_PASSWORD = "ResetPasswordTemplate.html";
         private const string TEMPLATE_WELCOME_COURSE = "WelcomeCourseTemplate.html";
         private const string TEMPLATE_COMPLETION_COURSE = "CourseCompletedTemplate.html";
+        private const string TEMPLATE_OTP = "OtpEmailTemplate.html";
 
         // ===== Placeholder keys =====
         private const string PH_CONFIRMATION_URL = "{{ .ConfirmationURL }}";
@@ -18,6 +19,7 @@ namespace LecX.Infrastructure.ExternalServices.Mail
         private const string PH_COURSE_NAME = "{{ .CourseName }}";
         private const string PH_COURSE_URL = "{{ .CourseUrl }}";
         private const string PH_CERT_URL = "{{ .CertificateUrl }}";
+        private const string PH_OTP_CODE = "{{ .OtpCode }}";
 
         // ===== Public APIs =====
 
@@ -82,6 +84,17 @@ namespace LecX.Infrastructure.ExternalServices.Mail
 
             using var reader = new StreamReader(stream);
             return await reader.ReadToEndAsync();
+        }
+
+        public async Task<string> BuildSendOtpEmailAsync(string otpCode, string email)
+        {
+            var html = await LoadTemplateAsync(TEMPLATE_OTP);
+
+            html = html
+                .Replace(PH_OTP_CODE, otpCode ?? string.Empty)
+                .Replace(PH_EMAIL, email ?? string.Empty);
+
+            return html;
         }
     }
 }

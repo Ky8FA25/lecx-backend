@@ -47,7 +47,7 @@ namespace LecX.WebApi.Endpoints.Auth.ConfirmEmail
             {
                 await SendAsync(new
                 {
-                    message = "Email confirmation failed",
+                    message = "Otp confirmation failed",
                     errors = result.Errors.Select(e => e.Description)
                 }, StatusCodes.Status400BadRequest, ct);
                 return;
@@ -60,7 +60,7 @@ namespace LecX.WebApi.Endpoints.Auth.ConfirmEmail
                 return;
             }
 
-            await SendOkAsync(new { message = "Email confirmation successful" }, ct);
+            await SendOkAsync(new { message = "Otp confirmation successful" }, ct);
         }
 
         // Minimal local-URL check để tránh open redirect

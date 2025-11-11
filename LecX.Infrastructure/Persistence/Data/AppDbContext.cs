@@ -54,6 +54,8 @@ namespace LecX.Infrastructure.Persistence.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Ignore<VerificationToken>();
+
             builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
             RemoveAspNetPrefixInIdentityTable(builder: builder);
