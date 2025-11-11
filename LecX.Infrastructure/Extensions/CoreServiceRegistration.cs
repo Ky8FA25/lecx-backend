@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using LecX.Application.Abstractions.ExternalServices.Firebase;
 using LecX.Application.Abstractions.InternalServices.Certificates;
 using LecX.Application.Abstractions.InternalServices.Queues;
 using LecX.Application.Features.Courses.CreateCourse;
@@ -9,6 +10,7 @@ using LecX.Infrastructure.Extensions.Jwt;
 using LecX.Infrastructure.Extensions.Mail;
 using LecX.Infrastructure.Extensions.PayOS;
 using LecX.Infrastructure.Extensions.Swagger;
+using LecX.Infrastructure.ExternalServices.Firebase;
 using LecX.Infrastructure.InternalServices.Certificates;
 using LecX.Infrastructure.InternalServices.Queues;
 using LecX.Infrastructure.Workers;
@@ -47,6 +49,7 @@ namespace LecX.Infrastructure.Extensions
             services.AddSingleton<StudentCourseCompletionQueue>();
             services.AddSingleton<IStudentCourseCompletionQueue>(sp => sp.GetRequiredService<StudentCourseCompletionQueue>());
             services.AddHostedService<CertificateIssueWorker>();
+            services.AddHttpClient<IFirebaseDbService, FirebaseDbService>();
 
             return services;
         }

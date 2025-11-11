@@ -45,7 +45,7 @@ namespace LecX.WebApi.Endpoints.Auth.Register
             await mail.SendMailAsync(new MailContent
             {
                 To = result.Email,
-                Subject = "Confirm Email LecX",
+                Subject = "Confirm Otp LecX",
                 Body = body
             });
 
