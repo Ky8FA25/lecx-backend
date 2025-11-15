@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace LecX.WebApi.Endpoints.Auth.Common
+﻿namespace LecX.WebApi.Endpoints.Auth.Common
 {
     public static class AuthHelper
     {

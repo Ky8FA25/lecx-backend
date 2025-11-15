@@ -1,4 +1,5 @@
 ﻿using LecX.Application.Abstractions.Persistence;
+using LecX.Application.Common.Execption;
 using LecX.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,29 +12,24 @@ namespace LecX.Application.Features.Comments.DeleteComment
     {
         public async Task<DeleteCommentResponse> Handle(DeleteCommentRequest req, CancellationToken ct)
         {
+            if (string.IsNullOrWhiteSpace(req.UserId))
+                throw new ForbiddenException("Unauthorized");
+
             var comment = await dbContext.Set<Comment>()
                .SingleOrDefaultAsync(c => c.CommentId == req.CommentId, ct);
 
             if (comment is null || comment.IsDeleted)
-                throw new KeyNotFoundException("Comment not found");
+                throw new NotFoundException("Comment not found");
+
+            if (comment.UserId != req.UserId)
+                throw new ForbiddenException("You don't have permission to delete this comment");
 
             comment.IsDeleted = true;
 
-            try
-            {
-                var affected = await dbContext.SaveChangesAsync(ct);
-                return affected > 0
-                    ? new(true, "Deleted successfully")
-                    : new(false, "No rows affected" );
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return new(false, "Comment no longer exists (concurrency)");
-            }
-            catch (DbUpdateException)
-            {
-                return new(false, "Database error while deleting comment") ;
-            }
+            var affected = await dbContext.SaveChangesAsync(ct);
+            return affected > 0
+                ? new(true, "Deleted successfully")
+                : new(false, "No rows affected");
         }
     }
 }

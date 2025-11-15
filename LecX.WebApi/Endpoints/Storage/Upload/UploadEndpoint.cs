@@ -16,7 +16,7 @@ namespace LecX.WebApi.Endpoints.Storage.Upload
             Summary(s =>
             {
                 s.Summary = "Upload file lên GCS qua server";
-                s.Description = "Nhận multipart file, upload bằng server và trả về objectName + public URL.";
+                s.Description = "Nhận multipart file, upload bằng server và trả về objectName + public URL. Chỉ dùng khi up file nhỏ (dưới 20mb)";
             });
         }
 
@@ -32,7 +32,7 @@ namespace LecX.WebApi.Endpoints.Storage.Upload
             var (fileName,ext) = FileNameHelper.Normalize(file.FileName);
 
             var folder = string.IsNullOrWhiteSpace(req.Prefix)
-                ? StoragePaths.Default
+                ? GoogleStoragePaths.Default
                 : req.Prefix.Trim().Trim('/');
 
             // thêm Guid phía sau để tránh trùng tên
@@ -45,7 +45,8 @@ namespace LecX.WebApi.Endpoints.Storage.Upload
             {
                 Success = true,
                 ObjectName = savedName,
-                PublicUrl = publicUrl
+                PublicUrl = publicUrl,
+                FileName = fileName
             }, ct);
         }
     }

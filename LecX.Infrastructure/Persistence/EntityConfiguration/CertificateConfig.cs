@@ -22,6 +22,8 @@ namespace LecX.Infrastructure.Persistence.EntityConfiguration
              .WithMany(c => c.Certificates)
              .HasForeignKey(x => x.CourseId)
              .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasIndex(x => new { x.StudentId, x.CourseId }).IsUnique();
         }
     }
 }

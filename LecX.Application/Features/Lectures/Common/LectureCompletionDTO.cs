@@ -6,7 +6,7 @@
         public string StudentId { get; set; }
         public int LectureId { get; set; }
         public DateTime? CompletionDate { get; set; } = DateTime.Now;
-        public StudentCompletedLectureDTO? User { get; set; }
+        public StudentCompletedLectureDTO? Student { get; set; }
     }
 
     public sealed class StudentCompletedLectureDTO

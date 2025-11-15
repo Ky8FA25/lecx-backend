@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LecX Course Certificate</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .certificate-container {
+        width: 100%;
+        max-width: 1000px;
+        height: 655px;
+        background: white;
+        display: flex;
+        position: relative;
+        border: 12px solid #999;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .certificate-container::before {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        border: 2px solid #999;
+        pointer-events: none;
+      }
+
+      .content {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 1;
+      }
+
+      .left-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 40px;
+      }
+
+      .right-section {
+        position: relative;
+        width: 220px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin-right: 50px;
+      }
+
+      .banner-ribbon {
+        background: linear-gradient(135deg, #d4e8f7 0%, #c5dff0 100%);
+        /* reduced width to shift banner left */
+        width: 200px;
+        flex: 0 0 65%;
+        padding: 40px 20px;
+        position: relative;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 17px;
+      }
+
+      .banner-ribbon::after {
+        content: "";
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-25%);
+        width: 0;
+        height: 0;
+        border-left: 80px solid transparent;
+        border-right: 0px solid transparent;
+        border-top: 20px solid #c5dff0;
+      }
+
+      .banner-title {
+        /* increased font size */
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+        text-transform: uppercase;
+        line-height: 1.4;
+      }
+
+      .seal {
+        width: 140px;
+        height: 140px;
+        border: 3px solid #999;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+        position: relative;
+        margin: 0 auto;
+      }
+
+      .seal-text {
+        /* increased font size */
+        font-size: 13px;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        letter-spacing: 1px;
+      }
+
+      .seal::before {
+        content: "";
+        position: absolute;
+        width: 130px;
+        height: 130px;
+        border: 2px dashed #999;
+        border-radius: 50%;
+      }
+
+      .certificate-label {
+        /* increased font size */
+        font-size: 11px;
+        color: #666;
+        text-align: center;
+        margin-top: 15px;
+        letter-spacing: 1px;
+        flex: 0 0 25%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 10px;
+      }
+
+      .verify-section {
+        font-size: 10px;
+        color: #666;
+        text-align: right;
+        margin-top: 10px;
+        line-height: 1.4;
+        width: 275px;
+        transform: translate(-75px, 0px);
+        margin-top: 20px;
+      }
+
+      .verify-link {
+        color: #1a5490;
+        text-decoration: underline;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 0;
+      }
+
+      .logo {
+        /* increased font size and split Lec/X colors */
+        font-size: 40px;
+        font-weight: bold;
+        margin-bottom: 50px;
+      }
+
+      .logo-lec {
+        color: #1a5490;
+      }
+
+      .logo-x {
+        color: #5b9fd8;
+      }
+
+      .fs-3 {
+        font-size: large;
+      }
+
+      .date {
+        /* increased font size */
+        font-size: 14px;
+        color: #666;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+      }
+
+      .student-name {
+        /* increased font size */
+        font-size: 42px;
+        font-weight: bold;
+        color: #1a5490;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .completion-text {
+        /* increased font size */
+        font-size: 16px;
+        color: #666;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .course-name {
+        /* increased font size */
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .course-description {
+        /* increased font size */
+        font-size: 14px;
+        color: #777;
+        text-align: center;
+        line-height: 1.6;
+        margin-bottom: 50px;
+      }
+
+      .signature-section {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin-top: 0;
+      }
+
+      .signature {
+        text-align: center;
+      }
+
+      .signature-line {
+        width: 100%;
+        border-top: 2px solid #333;
+        margin-bottom: 5px;
+      }
+
+      .signature-name {
+        /* increased font size */
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .signature-title {
+        /* increased font size */
+        font-size: 15px;
+        color: #666;
+        margin-top: 3px;
+      }
+
+      @media print {
+        body {
+          background: white;
+          padding: 0;
+        }
+        .certificate-container {
+          box-shadow: none;
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="certificate-container">
+      <div class="content">
+        <div class="left-section">
+          <div class="header">
+            <div class="logo">
+              <span class="logo-lec">Lec</span><span class="logo-x">X</span>
+            </div>
+            <div class="date">{{ .CompletionDate }}</div>
+          </div>
+
+          <div class="student-name">{{ .StudentName }}</div>
+
+          <div class="completion-text">has successfully completed</div>
+
+          <div class="course-name">{{ .CourseName }}</div>
+
+          <div class="course-description">
+            an online course authorized by LecX and offered through our learning
+            platform.
+          </div>
+
+          <div class="signature-section">
+            <div class="signature">
+              <div class="signature-line"></div>
+              <div class="signature-name">{{ .InstructorName }}</div>
+              <div class="signature-title">{{ .InstructorTitle }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-section">
+          <div class="banner-ribbon">
+            <div class="banner-title">Course<br />Certificate</div>
+            <div class="seal">
+              <div class="seal-text">
+                <span class="logo-lec fs-3">Lec</span
+                ><span class="logo-x fs-3">X</span> <br />CERTIFICATE OF<br />COMPLETION
+              </div>
+            </div>
+          </div>
+          <div class="certificate-label">
+            <div class="verify-section">
+              Verify at:<br />
+              <a href="{{ .VerifyUrl }}" class="verify-link">{{ .VerifyUrl }}</a
+              ><br /><br />
+              LecX has confirmed the identity of this individual and their
+              participation in the course.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

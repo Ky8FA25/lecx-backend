@@ -1,7 +1,7 @@
 ﻿using Google;
 using Google.Cloud.Storage.V1;
 using LecX.Application.Abstractions.ExternalServices.GoogleStorage;
-using LecX.Application.Common.Utils;
+using LecX.Application.Commons.Constants;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -11,7 +11,6 @@ namespace LecX.Infrastructure.ExternalServices.GoogleStorage
     internal sealed class GoogleStorageService : IGoogleStorageService
     {
         private readonly ILogger<GoogleStorageService> _logger = NullLogger<GoogleStorageService>.Instance;
-        private readonly GoogleStorageSettings _settings = new();
         private readonly StorageClient _client;
         private readonly UrlSigner _signer;
         private readonly string _bucket;
@@ -19,7 +18,6 @@ namespace LecX.Infrastructure.ExternalServices.GoogleStorage
         public GoogleStorageService(StorageClient client, UrlSigner signer, IOptions<GoogleStorageSettings> opt)
         {
             _logger = NullLogger<GoogleStorageService>.Instance;
-            _settings = opt.Value ?? throw new ArgumentNullException(nameof(opt));
             _client = client;
             _signer = signer;
             _bucket = opt.Value.Bucket ?? throw new ArgumentNullException(nameof(opt.Value.Bucket));
@@ -27,7 +25,7 @@ namespace LecX.Infrastructure.ExternalServices.GoogleStorage
 
         public string GetDefaultAvatar()
         {
-            return $"https://storage.googleapis.com/{_bucket}/{_settings.DefaultAvatarPath}";
+            return $"https://storage.googleapis.com/{_bucket}/{GoogleStoragePaths.Public.DefaultAvatars}";
         }
 
         public async Task<string> UploadAsync(Stream stream, string objectName, string contentType, CancellationToken ct = default)

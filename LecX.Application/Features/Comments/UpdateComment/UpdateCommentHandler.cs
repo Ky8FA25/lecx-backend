@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LecX.Application.Abstractions.Persistence;
+using LecX.Application.Common.Execption;
 using LecX.Application.Features.Comments.Common;
 using LecX.Domain.Entities;
 using MediatR;
@@ -14,32 +15,26 @@ namespace LecX.Application.Features.Comments.UpdateComment
     {
         public async Task<UpdateCommentResponse> Handle(UpdateCommentRequest req, CancellationToken ct)
         {
-            var comment = await db.Set<Comment>()
-                .SingleOrDefaultAsync(c => c.CommentId == req.CommentId, ct);
+            if (string.IsNullOrWhiteSpace(req.UserId))
+                throw new ForbiddenException("Unauthorized");
 
-            if (comment is null || comment.IsDeleted)
-                throw new KeyNotFoundException("Comment not found");
+            var comment = await db.Set<Comment>()
+                .Where(c => c.CommentId == req.CommentId)
+                .Where(c => !c.IsDeleted) // bản thân chưa bị xoá
+                .SingleOrDefaultAsync(ct);
+
+            if (comment is null)
+                throw new NotFoundException("Comment not found");
+
+            if (comment.UserId != req.UserId)
+                throw new ForbiddenException("You don't have permission to edit this comment");
 
             comment.Content = req.Content;
             comment.IsEdited = true;
+            await db.SaveChangesAsync(ct);
 
-            try
-            {
-                var affected = await db.SaveChangesAsync(ct);
-
-                return affected > 0
-                    ? new()
-                    {
-                        Data = mapper.Map<CommentDto>(comment),
-                        Success = true,
-                        Message = "Success"
-                    }
-                    : new() { Message = "Failed" };
-            }
-            catch (DbUpdateException)
-            {
-                return new() { Message = "Error while creating comment" };
-            }
+            var updated = mapper.Map<CommentDto>(comment);
+            return new("Success", true, updated);
         }
     }
 }

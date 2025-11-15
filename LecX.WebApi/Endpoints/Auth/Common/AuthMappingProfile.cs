@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using LecX.Application.Features.Auth.Common;
 using LecX.Application.Features.Auth.Login;
-using LecX.Application.Features.Auth.Refresh;
 using LecX.Application.Features.Auth.Register;
 using LecX.Application.Features.Auth.ResetPassword;
 using LecX.WebApi.Endpoints.Auth.Login;
@@ -16,22 +15,22 @@ namespace LecX.WebApi.Endpoints.Auth.Common
         public AuthMappingProfile()
         {
             //Login
-            CreateMap<LoginRequest, LoginCommand>().ReverseMap();
+            CreateMap<LoginRequest, LoginCommand>();
             CreateMap<AuthResult, LoginResponse>();
 
             //Refresh token
             CreateMap<AuthResult, RefreshResponse>();
 
             //Register 
-            CreateMap<RegisterRequest, RegisterCommand>().ReverseMap();
+            CreateMap<RegisterRequest, RegisterCommand>();
             CreateMap<RegisterResult, RegisterResponse>();
 
             //Register 
-            CreateMap<RegisterRequest, RegisterCommand>().ReverseMap();
+            CreateMap<RegisterRequest, RegisterCommand>();
             CreateMap<RegisterResult, RegisterResponse>();
 
             //Password reset
-            CreateMap<ResetPasswordRequest, ResetPasswordCommand>().ReverseMap();
+            CreateMap<ResetPasswordRequest, ResetPasswordCommand>();
         }
     }
 }

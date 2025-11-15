@@ -8,7 +8,7 @@
         public DateTime Timestamp { get; set; }
         public int? ParentCmtId { get; set; }
         public CommentUserDto User { get; set; }
-        public ICollection<CommentFileDto>? CommentFileDtos { get; set; }
+        public CommentFileDto? File { get; set; }
     }
 
     public sealed class CommentUserDto
@@ -21,10 +21,6 @@
 
     public sealed class CommentFileDto
     {
-        public int FileId { get; set; }
-        public int CommentId { get; set; }
-        public string FileName { get; set; }
         public string FilePath { get; set; }
-        public DateTime UploadDate { get; set; } = DateTime.Now;
     }
 }

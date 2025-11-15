@@ -1,6 +1,5 @@
 ﻿using LecX.Application.Abstractions.ExternalServices.GoogleAuth;
 using LecX.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
@@ -10,16 +9,13 @@ public class GoogleAuthService : IGoogleAuthService
 {
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public GoogleAuthService(
         SignInManager<User> signInManager,
-        UserManager<User> userManager,
-        IHttpContextAccessor httpContextAccessor)
+        UserManager<User> userManager)
     {
         _signInManager = signInManager;
         _userManager = userManager;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<ExternalLoginInfo?> GetExternalLoginInfoAsync()

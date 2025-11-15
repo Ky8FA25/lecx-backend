@@ -1,5 +1,4 @@
-﻿using ct.backend.Features.Auth.Common;
-using FastEndpoints;
+﻿using FastEndpoints;
 using LecX.Application.Abstractions.ExternalServices.Mail;
 using LecX.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -11,10 +10,10 @@ namespace LecX.WebApi.Endpoints.Auth.ResetPassword
 {
     public sealed class ForgotPasswordEndpoint(
         UserManager<User> userManager,
-        IEmailTemplateService emailTpl,
+        IMailTemplateService mailTpl,
         IConfiguration config,
-        IMailService mail)
-      : Endpoint<ForgotPasswordRequest>
+        IMailService mail
+        ) : Endpoint<ForgotPasswordRequest>
     {
         public override void Configure()
         {
@@ -26,7 +25,7 @@ namespace LecX.WebApi.Endpoints.Auth.ResetPassword
         public override async Task HandleAsync(ForgotPasswordRequest req, CancellationToken ct)
         {
             var user = await userManager.FindByEmailAsync(req.Email);
-            if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
+            if (user == null || !await userManager.IsEmailConfirmedAsync(user))
             {
                 await SendOkAsync(new { message = "If your email is registered, you will receive a password reset email." }, ct);
                 return;
@@ -36,8 +35,8 @@ namespace LecX.WebApi.Endpoints.Auth.ResetPassword
             var rawToken = await userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(rawToken));
 
-            var feBaseUrl = config.GetValue<string>("Frontend:BaseUrl") ?? "";
-            var feResetPath = config.GetValue<string>("Frontend:ResetPath") ?? "/reset-password";
+            var feBaseUrl = (config["Frontend:BaseUrl"] ?? string.Empty).TrimEnd('/');
+            var feResetPath = (config["Frontend:ResetPath"] ?? "/reset-password").Trim();
 
             // chuẩn hoá
             feBaseUrl = feBaseUrl.TrimEnd('/');
@@ -48,11 +47,10 @@ namespace LecX.WebApi.Endpoints.Auth.ResetPassword
                            + $"&token={encodedToken}";
             //+ (string.IsNullOrEmpty(returnUrl) ? "" : $"&returnUrl={Uri.EscapeDataString(returnUrl)}");
 
-            var emailBody = await emailTpl.BuildEmailBodyAsync(
-                          templateFileName: "ResetPasswordTemplate.html",
-                          confirmationUrl: resetUrl!,
-                          email: user.Email
-                      );
+            var emailBody = await mailTpl.BuildResetPasswordEmailAsync(
+                      resetUrl: resetUrl!,
+                      email: user.Email
+                  );
 
             // 4. Gửi mail
             await mail.SendMailAsync(new MailContent
