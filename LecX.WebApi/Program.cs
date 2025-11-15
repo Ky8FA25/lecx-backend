@@ -23,7 +23,12 @@ namespace WebApi
             builder.Services.AddCors(opt =>
             {
                 opt.AddDefaultPolicy(p => p
-                    .AllowAnyOrigin()
+                   .WithOrigins(
+                        "http://localhost:5173",   // Vite dev server HTTP
+                        "https://localhost:5173",  // Vite dev server HTTPS
+                        "http://localhost:4200",   // Angular dev server HTTP
+                        "https://localhost:4200"   // Angular dev server HTTPS
+                    )
                     .AllowAnyHeader()
                     .AllowAnyMethod());
             });
