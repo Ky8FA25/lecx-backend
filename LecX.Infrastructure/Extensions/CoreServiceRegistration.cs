@@ -8,6 +8,7 @@ using LecX.Infrastructure.Extensions.GoogleAuth;
 using LecX.Infrastructure.Extensions.GoogleStorage;
 using LecX.Infrastructure.Extensions.Jwt;
 using LecX.Infrastructure.Extensions.Mail;
+using LecX.Infrastructure.Extensions.OData;
 using LecX.Infrastructure.Extensions.PayOS;
 using LecX.Infrastructure.Extensions.Swagger;
 using LecX.Infrastructure.ExternalServices.Firebase;
@@ -50,6 +51,7 @@ namespace LecX.Infrastructure.Extensions
             services.AddSingleton<IStudentCourseCompletionQueue>(sp => sp.GetRequiredService<StudentCourseCompletionQueue>());
             services.AddHostedService<CertificateIssueWorker>();
             services.AddHttpClient<IFirebaseDbService, FirebaseDbService>();
+            services.AddODataSupport();
 
             return services;
         }
