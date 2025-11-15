@@ -1,13 +1,5 @@
 ﻿using LecX.Application.Abstractions;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LecX.Application.Common.Dtos;
-using LecX.Application.Features.Submissions.DeleteSubmission;
-using MediatR;
 using LecX.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using LecX.Application.Abstractions.Persistence;
