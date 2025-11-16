@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace LecX.Application.Features.Submissions.CreateSubmission
@@ -12,7 +13,7 @@ namespace LecX.Application.Features.Submissions.CreateSubmission
     {
        
         public int AssignmentId { get; set; }
-        public string UserId { get; set; }
+        [JsonIgnore]
         public string StudentId { get; set; }
         public string SubmissionLink { get; set; }
         public string FileName { get; set; }

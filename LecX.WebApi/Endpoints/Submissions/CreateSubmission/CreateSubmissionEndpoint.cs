@@ -1,8 +1,9 @@
-﻿using MediatR;
-using FastEndpoints;
+﻿using FastEndpoints;
+using LecX.Application.Features.StudentCourses.GetCoursesFilteredByStudent;
 using LecX.Application.Features.Submissions.CreateSubmission;
-using System.Security.Claims;
+using MediatR;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace LecX.WebApi.Endpoints.Submissions.CreateSubmission
 {
@@ -26,7 +27,13 @@ namespace LecX.WebApi.Endpoints.Submissions.CreateSubmission
             try
             {
                 var userId = httpContext.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                req.UserId = userId!;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    await SendAsync(
+                        new CreateSubmissionResponse { Message = "UserId not found", Success = false }, StatusCodes.Status400BadRequest, ct);
+                    return;
+                }
+                req.StudentId = userId!;
                 var res = await sender.Send(req, ct);
                 await SendOkAsync(res, ct);
             }
