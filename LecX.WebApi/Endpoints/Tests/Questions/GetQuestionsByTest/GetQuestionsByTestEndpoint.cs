@@ -13,7 +13,7 @@ namespace LecX.WebApi.Endpoints.Tests.Questions.GetQuestionsByTest
             {
                 s.Summary = "Get list questions paginated in a test by TestId";
             });
-            Roles("Instructor");
+            Roles("Instructor", "Student");
         }
         public override async Task HandleAsync(GetQuestionsByTestRequest req, CancellationToken ct)
         {
