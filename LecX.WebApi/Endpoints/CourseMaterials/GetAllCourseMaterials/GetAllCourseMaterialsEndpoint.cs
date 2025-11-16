@@ -13,7 +13,6 @@ namespace LecX.WebApi.Endpoints.CourseMaterials.GetAllCourseMaterials
             {
                 s.Summary = "Get all course materials in a course";
             });
-            Roles("Admin", "Instructor");
         }
 
         public override async Task HandleAsync(CancellationToken ct)
