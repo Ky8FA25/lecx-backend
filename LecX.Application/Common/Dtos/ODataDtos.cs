@@ -1,4 +1,5 @@
-﻿using LecX.Domain.Enums;
+﻿using LecX.Domain.Entities;
+using LecX.Domain.Enums;
 
 namespace LecX.Application.Common.Dtos
 {
@@ -81,5 +82,16 @@ namespace LecX.Application.Common.Dtos
         public string Comment { get; set; }
         public DateTime FeedbackDate { get; set; } = DateTime.Now;
         public string UserName { get; set; }
+    }
+
+    public class InstructorConfirmationODataDto
+    {
+        public int ConfirmationId { get; set; }
+        public string UserId { get; set; }
+        public string FileName { get; set; }
+        public string Certificatelink { get; set; }
+        public string UserName { get; set; }
+        public DateTime SendDate { get; set; } = DateTime.Now;
+        public string Description { get; set; }
     }
 }

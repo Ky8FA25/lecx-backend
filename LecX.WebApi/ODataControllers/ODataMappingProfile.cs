@@ -63,6 +63,16 @@ namespace LecX.WebApi.ODataControllers
                             : null
                     )
                 );
+
+            CreateMap<InstructorConfirmation, InstructorConfirmationODataDto>()
+           .ForMember(
+               dest => dest.UserName,
+               opt => opt.MapFrom(src =>
+                   src.User != null
+                       ? $"{src.User.FirstName} {src.User.LastName}"
+                       : null
+               )
+           );
         }
     }
 }

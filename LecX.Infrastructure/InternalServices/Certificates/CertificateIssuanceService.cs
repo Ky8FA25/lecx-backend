@@ -160,18 +160,14 @@ namespace LecX.Infrastructure.InternalServices.Certificates
             return s.ToLowerInvariant();
         }
 
-        /// <summary>
-        /// Kiểm tra progress và tính điểm trung bình cả Assignment và Test.
-        /// Trả về true nếu học viên pass (đạt >= 5) và không có điểm 0, false nếu không.
-        /// </summary>
         private async Task<bool> HasStudentPassedCourseAsync(
-            IAppDbContext db,
-            string studentId,
-            int courseId,
-            ILogger? logger = null,
-            CancellationToken ct = default)
+             IAppDbContext db,
+             string studentId,
+             int courseId,
+             ILogger? logger = null,
+             CancellationToken ct = default)
         {
-            // 1️⃣ Lấy StudentCourse
+            // 1️⃣ Kiểm tra progress
             var studentCourse = await db.Set<StudentCourse>()
                 .AsNoTracking()
                 .Where(sc => sc.StudentId == studentId && sc.CourseId == courseId)
@@ -191,39 +187,58 @@ namespace LecX.Infrastructure.InternalServices.Certificates
                 return false;
             }
 
-            // 2️⃣ Lấy điểm Assignment chỉ với cột Score
-            var assignmentScores = await (
-                from a in db.Set<AssignmentScore>()
-                join ass in db.Set<Assignment>() on a.AssignmentId equals ass.AssignmentId
-                where a.StudentId == studentId && ass.CourseId == courseId
-                select a.Score
-            ).ToListAsync(ct);
+            // 2️⃣ Lấy tổng số bài Assignment và Test
+            var totalAssignments = await db.Set<Assignment>().Where(a => a.CourseId == courseId).CountAsync(ct);
+            var totalTests = await db.Set<Test>().Where(t => t.CourseId == courseId).CountAsync(ct);
 
-            // 3️⃣ Lấy điểm Test chỉ với cột ScoreValue
-            var testScores = await (
-                from t in db.Set<TestScore>()
-                join test in db.Set<Test>() on t.TestId equals test.TestId
-                where t.StudentId == studentId && test.CourseId == courseId
-                select t.ScoreValue
-            ).ToListAsync(ct);
+            // 3️⃣ Lấy tổng số bài đã làm và tính tổng điểm
+            var assignmentData = await db.Set<AssignmentScore>()
+                .Join(db.Set<Assignment>(), s => s.AssignmentId, a => a.AssignmentId, (s, a) => new { s.Score, a.CourseId, s.StudentId })
+                .Where(x => x.StudentId == studentId && x.CourseId == courseId)
+                .GroupBy(x => 1)
+                .Select(g => new
+                {
+                    Count = g.Count(),
+                    HasZero = g.Any(x => x.Score == 0),
+                    Sum = g.Sum(x => (double)x.Score)
+                })
+                .FirstOrDefaultAsync(ct);
 
-            // 4️⃣ Gộp tất cả điểm
-            var allScores = assignmentScores.Concat(testScores).ToList();
+            var testData = await db.Set<TestScore>()
+                .Join(db.Set<Test>(), t => t.TestId, test => test.TestId, (t, test) => new { t.ScoreValue, test.CourseId, t.StudentId })
+                .Where(x => x.StudentId == studentId && x.CourseId == courseId)
+                .GroupBy(x => 1)
+                .Select(g => new
+                {
+                    Count = g.Count(),
+                    HasZero = g.Any(x => x.ScoreValue == 0),
+                    Sum = g.Sum(x => (double)x.ScoreValue)
+                })
+                .FirstOrDefaultAsync(ct);
 
-            // 5️⃣ Check nếu có phần tử = 0 thì fail
-            if (allScores.Any(s => s == 0))
+            // 4️⃣ Check đủ bài
+            if ((assignmentData?.Count ?? 0) < totalAssignments || (testData?.Count ?? 0) < totalTests)
             {
-                logger?.LogInformation("Some scores are 0: StudentId={StudentId}, CourseId={CourseId}", studentId, courseId);
+                logger?.LogInformation("Student has missing assignments or tests: StudentId={StudentId}, CourseId={CourseId}", studentId, courseId);
+                return false;
+            }
+
+            // 5️⃣ Check điểm 0
+            if ((assignmentData?.HasZero ?? false) || (testData?.HasZero ?? false))
+            {
+                logger?.LogInformation("Student has score 0: StudentId={StudentId}, CourseId={CourseId}", studentId, courseId);
                 return false;
             }
 
             // 6️⃣ Tính trung bình
-            double averageScore = allScores.Any() ? allScores.Average() : 0;
+            double totalScore = (assignmentData?.Sum ?? 0) + (testData?.Sum ?? 0);
+            int totalCount = (assignmentData?.Count ?? 0) + (testData?.Count ?? 0);
+            double average = totalCount > 0 ? totalScore / totalCount : 0;
 
-            logger?.LogInformation("Average score: StudentId={StudentId}, CourseId={CourseId}, AvgScore={AverageScore}",
-                studentId, courseId, averageScore);
+            logger?.LogInformation("Average score: StudentId={StudentId}, CourseId={CourseId}, AvgScore={Average}",
+                studentId, courseId, average);
 
-            return averageScore >= 5;
+            return average >= 5;
         }
     }
 }
