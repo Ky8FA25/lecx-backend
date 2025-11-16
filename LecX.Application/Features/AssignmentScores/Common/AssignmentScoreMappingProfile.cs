@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using LecX.Application.Features.Assignments.AssignmentsDtos;
 using LecX.Application.Features.AssignmentScores.CreateAssignmentScore;
+using LecX.Application.Features.AssignmentScores.GetAssignmentScoreByCourseId;
 using LecX.Application.Features.AssignmentScores.UpdateAssignmentScore;
 using LecX.Domain.Entities;
 
@@ -15,7 +17,10 @@ namespace LecX.Application.Features.AssignmentScores.Common
             CreateMap<CreateAssignmentScoreRequest, AssignmentScore>();
 
             CreateMap<UpdateAssignmentScoreRequest, AssignmentScore>();
-           
+
+            CreateMap<AssignmentScore, AssignmentScoreFullDataDto>();
+            CreateMap<Assignment, AssignmentDto>();
+
         }
     }
 }
