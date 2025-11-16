@@ -17,10 +17,10 @@ namespace LecX.Application.Features.AssignmentScores.UpdateAssignmentScore
         public async Task<UpdateAssignmentScoreResponse> Handle(UpdateAssignmentScoreRequest req, CancellationToken ct)
         {
             var assignmentScore = await db.Set<AssignmentScore>()
-                .SingleOrDefaultAsync( c => c.AssignmentScoreId == req.AssignmentScoreId, ct);
+                .SingleOrDefaultAsync(c => c.AssignmentScoreId == req.AssignmentScoreId, ct);
             if (assignmentScore is null)
                 throw new KeyNotFoundException("Assignment score not found");
-            
+
             mapper.Map(req, assignmentScore);
             db.Set<AssignmentScore>().Update(assignmentScore);
 
@@ -36,18 +36,7 @@ namespace LecX.Application.Features.AssignmentScores.UpdateAssignmentScore
                     return new UpdateAssignmentScoreResponse(false, "Assignment not found");
                 }
 
-                bool passed = await CourseCompletionHelper
-                     .HasStudentPassedCourseAsync(
-                         db,
-                         assignmentScore.StudentId,
-                         assignment.CourseId,
-                         ct: ct
-                     );
-
-                if (passed)
-                {
-                    await queue.EnqueueAsync(assignmentScore.StudentId, assignment.CourseId);
-                }
+                await queue.EnqueueAsync(assignmentScore.StudentId, assignment.CourseId);
 
                 if (affected > 0)
                 {

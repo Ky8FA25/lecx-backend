@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LecX.Application.Features.AssignmentScores.CreateAssignmentScore
 {
-    public sealed class CreateAssignmentScoreHandler (
+    public sealed class CreateAssignmentScoreHandler(
         IAppDbContext db,
         IMapper mapper,
         IStudentCourseCompletionQueue queue
@@ -31,18 +31,7 @@ namespace LecX.Application.Features.AssignmentScores.CreateAssignmentScore
                     return new CreateAssignmentScoreResponse(false, "Assignment not found", null);
                 }
 
-                bool passed = await CourseCompletionHelper
-                    .HasStudentPassedCourseAsync(
-                        db,
-                        assignmentScore.StudentId,
-                        assignment.CourseId,
-                        ct: ct
-                    );
-
-                if (passed)
-                {
-                    await queue.EnqueueAsync(assignmentScore.StudentId, assignment.CourseId);
-                }
+                await queue.EnqueueAsync(assignmentScore.StudentId, assignment.CourseId);
 
                 return affected > 0
                     ? new CreateAssignmentScoreResponse(true, "Success", mapper.Map<AssignmentScoreDto>(assignmentScore))

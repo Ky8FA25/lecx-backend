@@ -84,10 +84,7 @@ namespace LecX.Application.Features.Lectures.CreateLectureCompletion
 
                 if (oldProgress < 100 && newProgress >= 100)
                 {
-                    bool passed = await CourseCompletionHelper.HasStudentPassedCourseAsync(db,    
-                        studentCourse.StudentId, studentCourse.CourseId, ct: ct);
-                    if (passed)
-                        await queue.EnqueueAsync(studentCourse.StudentId, studentCourse.CourseId);
+                    await queue.EnqueueAsync(studentCourse.StudentId, studentCourse.CourseId);
                 }
 
                 await tx.CommitAsync(ct);
