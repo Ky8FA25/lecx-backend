@@ -1,0 +1,22 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "LecX.WebApi.Grpc";
+
+package video;
+
+// Request từ client gửi lên, chứa ID hoặc URL của video
+message VideoRequest {
+  string videoId = 1; // hoặc videoUrl nếu bạn muốn gửi link
+}
+
+// Response trả về từng chunk video
+message VideoChunk {
+  bytes content = 1;      // dữ liệu chunk
+  int32 sequence = 2;     // thứ tự chunk, optional nhưng hữu ích cho FE
+}
+
+// GRPC service
+service VideoService {
+  // Stream video từ server về client
+  rpc StreamVideo(VideoRequest) returns (stream VideoChunk);
+}

@@ -44,7 +44,7 @@
 		<PackageReference Include="itext7.pdfhtml" Version="6.2.1" />
 		<PackageReference Include="itext7.bouncy-castle-adapter" Version="9.3.0" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
 	  <ProjectReference Include="..\LecX.Application\LecX.Application.csproj" />
 	  <ProjectReference Include="..\LecX.Domain\LecX.Domain.csproj" />
@@ -55,9 +55,4 @@
 		<EmbeddedResource Include="ExternalServices/Pdf/Templates/**/*.html" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Compile Remove="ExternalServices\PayOS\**" />
-	  <EmbeddedResource Remove="ExternalServices\PayOS\**" />
-	  <None Remove="ExternalServices\PayOS\**" />
-	</ItemGroup>
 </Project>

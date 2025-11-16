@@ -1,6 +1,7 @@
 ﻿using FastEndpoints;
 using FastEndpoints.Swagger;
 using LecX.Infrastructure.Extensions;
+using LecX.WebApi.GrpcServices;
 using LecX.WebApi.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
 
@@ -45,6 +46,7 @@ namespace WebApi
                 //o.KnownProxies.Clear();
             });
 
+            builder.Services.AddGrpc();
             builder.Services.AddProblemDetails();
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
@@ -74,6 +76,9 @@ namespace WebApi
                 app.UseSwaggerGen();
 
             app.MapControllers();
+
+            app.MapGrpcService<VideoServiceGrpc>();
+            app.MapGet("/", () => "GRPC OK");
 
             app.Run();
         }
