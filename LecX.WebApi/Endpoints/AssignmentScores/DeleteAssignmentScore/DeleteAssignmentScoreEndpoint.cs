@@ -8,7 +8,7 @@ namespace LecX.WebApi.Endpoints.AssignmentScores.DeleteAssignmentScore
     {
         public override void Configure()
         {
-            Delete("api/assignmentscores/{AssignmentScoreId}");
+            Delete("api/assignment-scores/{AssignmentScoreId}");
             Summary(s =>
             {
                 s.Summary = "Delete Assignment Score by AssignmentScoreId";

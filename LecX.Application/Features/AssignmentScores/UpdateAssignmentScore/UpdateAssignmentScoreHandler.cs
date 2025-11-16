@@ -1,18 +1,18 @@
 ﻿using AutoMapper;
+using LecX.Application.Abstractions.InternalServices.Queues;
 using LecX.Application.Abstractions.Persistence;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LecX.Application.Common.Utils;
 using LecX.Domain.Entities;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace LecX.Application.Features.AssignmentScores.UpdateAssignmentScore
 {
-    public sealed class UpdateAssignmentScoreHandler(IAppDbContext db, IMapper mapper) : IRequestHandler<UpdateAssignmentScoreRequest, UpdateAssignmentScoreResponse>
+    public sealed class UpdateAssignmentScoreHandler(
+        IAppDbContext db,
+        IMapper mapper,
+        IStudentCourseCompletionQueue queue
+    ) : IRequestHandler<UpdateAssignmentScoreRequest, UpdateAssignmentScoreResponse>
     {
         public async Task<UpdateAssignmentScoreResponse> Handle(UpdateAssignmentScoreRequest req, CancellationToken ct)
         {
@@ -23,9 +23,32 @@ namespace LecX.Application.Features.AssignmentScores.UpdateAssignmentScore
             
             mapper.Map(req, assignmentScore);
             db.Set<AssignmentScore>().Update(assignmentScore);
+
             try
             {
                 var affected = await db.SaveChangesAsync(ct);
+
+                var assignment = await db.Set<Assignment>()
+                    .FirstOrDefaultAsync(a => a.AssignmentId == assignmentScore.AssignmentId, ct);
+
+                if (assignment == null)
+                {
+                    return new UpdateAssignmentScoreResponse(false, "Assignment not found");
+                }
+
+                bool passed = await CourseCompletionHelper
+                     .HasStudentPassedCourseAsync(
+                         db,
+                         assignmentScore.StudentId,
+                         assignment.CourseId,
+                         ct: ct
+                     );
+
+                if (passed)
+                {
+                    await queue.EnqueueAsync(assignmentScore.StudentId, assignment.CourseId);
+                }
+
                 if (affected > 0)
                 {
                     return new UpdateAssignmentScoreResponse(true, "Updated successfully");

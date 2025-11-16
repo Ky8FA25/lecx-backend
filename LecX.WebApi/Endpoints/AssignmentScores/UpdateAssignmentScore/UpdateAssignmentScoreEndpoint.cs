@@ -9,7 +9,7 @@ namespace LecX.WebApi.Endpoints.AssignmentScores.UpdateAssignmentScore
     {
         public override void Configure()
         {
-            Put("api/assignmentscores/{AssignmentScoreId}");
+            Put("api/assignment-scores/{AssignmentScoreId}");
             Summary(s =>
             {
                 s.Summary = "Update Score by AssignmentScoreId";

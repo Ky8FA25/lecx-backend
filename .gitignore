@@ -371,3 +371,6 @@ gcp-key.json
 *.gcp-key.json
 *.service-account.json
 secrets/
+
+# Bỏ qua thư mục chứa mail tạm (local email output)
+mailssave/

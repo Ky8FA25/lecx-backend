@@ -9,7 +9,7 @@ namespace LecX.WebApi.Endpoints.AssignmentScores.CreateAssignmentScore
     {
         public override void Configure()
         {
-            Post("/api/assignmentscores");
+            Post("/api/assignment-scores");
             Summary(s =>
             {
                 s.Summary = "Create assignment score";
