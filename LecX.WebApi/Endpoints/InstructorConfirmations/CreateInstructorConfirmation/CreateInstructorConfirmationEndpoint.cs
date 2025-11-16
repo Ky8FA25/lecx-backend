@@ -15,8 +15,6 @@ namespace LecX.WebApi.Endpoints.InstructorConfirmations.CreateInstructorConfirma
             {
                 s.Summary = "Create new instructor confirmation";
             });
-            Description(b => b
-                .Produces<CreateInstructorConfirmationResponse>());
             Roles("Student");
 
         }

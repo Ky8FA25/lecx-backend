@@ -15,8 +15,6 @@ namespace LecX.WebApi.Endpoints.InstructorConfirmations.ApproveInstructorConfirm
                 s.Summary = "Approve instructor confirmation and create Instructor record";
                 s.Description = "Admin only endpoint to approve an instructor confirmation request";
             });
-            Description(b => b
-                .Produces<ApproveInstructorConfirmationResponse>());
             Roles("Admin");
         }
 

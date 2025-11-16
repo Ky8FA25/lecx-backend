@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
 using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Common.Dtos;
-using LecX.Application.Features.Courses.GetFilteredCourses;
 using LecX.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using LecX.Application.Features.Submissions.SubmissionDtos;
 namespace LecX.Application.Features.Submissions.GetSubmissionsByAssignment
 {
@@ -26,7 +19,7 @@ namespace LecX.Application.Features.Submissions.GetSubmissionsByAssignment
 
             // 🔹 Lọc theo Assignment
             if (req.AssignmentId > 0 && req.AssignmentId != null)
-                query = query.Where(c => c.AssignmentId == req.AssignmentId);
+                query = query.Where(c => c.AssignmentId == req.AssignmentId).Include(c=> c.Student);
 
             query = query.OrderByDescending(c => c.SubmissionDate);
 
