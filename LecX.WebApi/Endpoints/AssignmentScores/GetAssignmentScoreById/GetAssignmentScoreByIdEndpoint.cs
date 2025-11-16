@@ -10,7 +10,7 @@ namespace LecX.WebApi.Endpoints.AssignmentScores.GetAssignmentScoreById
     {
         public override void Configure()
         {
-            Get("/api/assignmentscores/{assignmentScoreId:int}");
+            Get("/api/assignment-scores/{assignmentScoreId:int}");
             Summary(s =>
             {
                 s.Summary = "Get an assignment score by ID";

@@ -3,6 +3,7 @@ using LecX.Application.Abstractions.ExternalServices.Mail;
 using LecX.Application.Abstractions.ExternalServices.Pdf;
 using LecX.Application.Abstractions.InternalServices.Certificates;
 using LecX.Application.Abstractions.Persistence;
+using LecX.Application.Common.Utils;
 using LecX.Application.Commons.Constants;
 using LecX.Domain.Entities;
 using LecX.Domain.Enums;
@@ -44,7 +45,9 @@ namespace LecX.Infrastructure.InternalServices.Certificates
                 .FirstOrDefaultAsync(c => c.StudentId == studentId && c.CourseId == courseId, ct);
             if (existing is not null) return existing;
 
-            if (!await CheckPassedAsync(sc, ct)) return null;
+            //bool passed = await CourseCompletionHelper.HasStudentPassedCourseAsync(
+            //    db, studentId, courseId, ct: ct);
+            //if (!passed) return null;
 
             // Dữ liệu hiển thị
             var student = sc.Student;
@@ -154,45 +157,6 @@ namespace LecX.Infrastructure.InternalServices.Certificates
             var s = Regex.Replace(input, @"\s+", "-");               // spaces -> dash
             s = Regex.Replace(s, @"[^\w\-\.\p{L}\p{Nd}]+", "");      // remove special (giữ chữ cái số unicode)
             return s.ToLowerInvariant();
-        }
-
-        private async Task<bool> CheckPassedAsync(
-            StudentCourse studentCourse,
-            CancellationToken ct = default)
-        {
-            var studentId = studentCourse.StudentId;
-            var courseId = studentCourse.CourseId;
-
-            if (studentCourse is null) return false;
-
-            var scoreAssignments = await db.Set<AssignmentScore>()
-                .AsNoTracking()
-                .Include(x => x.Assignment)
-                .Where(x => x.StudentId == studentId && x.Assignment.CourseId == courseId)
-                .ToListAsync(ct);
-
-            var scoreTests = await db.Set<TestScore>()
-                .AsNoTracking()
-                .Include(x => x.Test)
-                .Where(x => x.StudentId == studentId && x.Test.CourseId == courseId)
-                .ToListAsync(ct);
-
-            if (!scoreAssignments.Any() || !scoreTests.Any()) return false;
-
-            // Có điểm 0 thì fail
-            bool hasZeroAssignmentScore = scoreAssignments.Any(x => x.Score == 0);
-            bool hasZeroTestScore = scoreTests.Any(x => x.ScoreValue == 0);
-            if (hasZeroAssignmentScore || hasZeroTestScore)
-                return false;
-
-            // Tính trung bình
-            double avgAssignment = scoreAssignments.Any() ? scoreAssignments.Average(x => (double)x.Score) : 0;
-            double avgTest = scoreTests.Any() ? scoreTests.Average(x => (double)x.ScoreValue) : 0;
-            double overallAvg = (avgAssignment + avgTest) / 2.0;
-
-            // Đủ điều kiện
-            //return studentCourse.Progress >= 100 && overallAvg >= 5;
-            return studentCourse.Progress >= 100;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LecX.Application.Abstractions.InternalServices.Queues;
 using LecX.Application.Abstractions.Persistence;
+using LecX.Application.Common.Utils;
 using LecX.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -77,14 +78,19 @@ namespace LecX.Application.Features.Lectures.CreateLectureCompletion
                     : 0;
                 var oldProgress = studentCourse.Progress;
 
+                await using var tx = await db.BeginTransactionAsync(ct);
                 studentCourse.Progress = newProgress;
                 await db.SaveChangesAsync(ct);
 
                 if (oldProgress < 100 && newProgress >= 100)
                 {
-                    // enqueue (studentId, courseId); worker sẽ gọi IssueAsync(...)
-                    await queue.EnqueueAsync(request.StudentId, lecture.CourseId, ct);
+                    bool passed = await CourseCompletionHelper.HasStudentPassedCourseAsync(db,    
+                        studentCourse.StudentId, studentCourse.CourseId, ct: ct);
+                    if (passed)
+                        await queue.EnqueueAsync(studentCourse.StudentId, studentCourse.CourseId);
                 }
+
+                await tx.CommitAsync(ct);
 
                 return new CreateLectureCompletionResponse
                 {

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using LecX.Application.Abstractions.InternalServices.Queues;
 using LecX.Application.Abstractions.Persistence;
+using LecX.Application.Common.Utils;
 using LecX.Application.Features.Tests.Common;
 using LecX.Domain.Entities;
 using MediatR;
@@ -7,8 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LecX.Application.Features.Tests.TestScoreHandler.CreateTestScore
 {
-    public sealed class CreateTestScoreHandler(IAppDbContext db, IMapper mapper) :
-        IRequestHandler<CreateTestScoreRequest, CreateTestScoreResponse>
+    public sealed class CreateTestScoreHandler(
+        IAppDbContext db,
+        IMapper mapper,
+        IStudentCourseCompletionQueue queue
+    ) : IRequestHandler<CreateTestScoreRequest, CreateTestScoreResponse>
     {
         public async Task<CreateTestScoreResponse> Handle(CreateTestScoreRequest request, CancellationToken ct)
         {
@@ -96,6 +101,20 @@ namespace LecX.Application.Features.Tests.TestScoreHandler.CreateTestScore
 
                 await db.Set<TestScore>().AddAsync(testScore, ct);
                 await db.SaveChangesAsync(ct);
+
+                bool passed = await CourseCompletionHelper
+                  .HasStudentPassedCourseAsync(
+                      db,
+                      testScore.StudentId,
+                      test.CourseId,
+                      ct: ct
+                  );
+
+                if (passed)
+                {
+                    await queue.EnqueueAsync(testScore.StudentId, test.CourseId);
+                }
+
                 testScore.Test = test;
                 var result = mapper.Map<TestScoreDTO>(testScore);
                 return new CreateTestScoreResponse

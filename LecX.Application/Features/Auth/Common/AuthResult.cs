@@ -21,5 +21,4 @@
         public string? AvatarUrl { get; set; }
         public IReadOnlyList<string> Roles { get; set; } = Array.Empty<string>();
     }
-
 }

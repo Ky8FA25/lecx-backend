@@ -10,13 +10,12 @@ namespace LecX.WebApi.Endpoints.InstructorConfirmations.CreateInstructorConfirma
     {
         public override void Configure()
         {
-            Post("/api/instructorconfirmations");
+            Post("/api/instructor-confirmations");
             Summary(s =>
             {
                 s.Summary = "Create new instructor confirmation";
             });
             Description(b => b
-                .WithTags("InstructorConfirmations")
                 .Produces<CreateInstructorConfirmationResponse>());
             Roles("Student");
 

@@ -1,12 +1,19 @@
 ﻿using AutoMapper;
+using LecX.Application.Abstractions.InternalServices.Queues;
 using LecX.Application.Abstractions.Persistence;
-using MediatR;
+using LecX.Application.Common.Utils;
 using LecX.Application.Features.AssignmentScores.Common;
 using LecX.Domain.Entities;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+
 namespace LecX.Application.Features.AssignmentScores.CreateAssignmentScore
 {
-    public sealed class CreateAssignmentScoreHandler (IAppDbContext db , IMapper mapper ) : IRequestHandler<CreateAssignmentScoreRequest, CreateAssignmentScoreResponse>
+    public sealed class CreateAssignmentScoreHandler (
+        IAppDbContext db,
+        IMapper mapper,
+        IStudentCourseCompletionQueue queue
+    ) : IRequestHandler<CreateAssignmentScoreRequest, CreateAssignmentScoreResponse>
     {
         public async Task<CreateAssignmentScoreResponse> Handle(CreateAssignmentScoreRequest req, CancellationToken ct)
         {
@@ -15,6 +22,28 @@ namespace LecX.Application.Features.AssignmentScores.CreateAssignmentScore
             try
             {
                 var affected = await db.SaveChangesAsync(ct);
+
+                var assignment = await db.Set<Assignment>()
+                    .FirstOrDefaultAsync(a => a.AssignmentId == assignmentScore.AssignmentId, ct);
+
+                if (assignment == null)
+                {
+                    return new CreateAssignmentScoreResponse(false, "Assignment not found", null);
+                }
+
+                bool passed = await CourseCompletionHelper
+                    .HasStudentPassedCourseAsync(
+                        db,
+                        assignmentScore.StudentId,
+                        assignment.CourseId,
+                        ct: ct
+                    );
+
+                if (passed)
+                {
+                    await queue.EnqueueAsync(assignmentScore.StudentId, assignment.CourseId);
+                }
+
                 return affected > 0
                     ? new CreateAssignmentScoreResponse(true, "Success", mapper.Map<AssignmentScoreDto>(assignmentScore))
                     : new CreateAssignmentScoreResponse(false, "Failed", null);
