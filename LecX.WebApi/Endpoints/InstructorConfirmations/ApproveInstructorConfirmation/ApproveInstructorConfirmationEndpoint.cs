@@ -9,7 +9,7 @@ namespace LecX.WebApi.Endpoints.InstructorConfirmations.ApproveInstructorConfirm
     {
         public override void Configure()
         {
-            Put("/api/instructor-confirmations/approve");
+            Post("/api/instructor-confirmations/approve");
             Summary(s =>
             {
                 s.Summary = "Approve instructor confirmation and create Instructor record";
