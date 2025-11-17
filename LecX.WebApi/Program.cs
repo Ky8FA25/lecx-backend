@@ -4,6 +4,7 @@ using LecX.Infrastructure.Extensions;
 using LecX.WebApi.GrpcServices;
 using LecX.WebApi.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace WebApi
 {
@@ -24,15 +25,26 @@ namespace WebApi
             builder.Services.AddCors(opt =>
             {
                 opt.AddDefaultPolicy(p => p
-                   .WithOrigins(
-                        "http://localhost:5173",   // Vite dev server HTTP
-                        "https://localhost:5173",  // Vite dev server HTTPS
-                        "http://localhost:4200",   // Angular dev server HTTP
-                        "https://localhost:4200"   // Angular dev server HTTPS
-                    )
+                   //.WithOrigins(
+                   //     "http://localhost:5173",   // Vite dev server HTTP
+                   //     "https://localhost:5173",  // Vite dev server HTTPS
+                   //     "http://localhost:4200",   // Angular dev server HTTP
+                   //     "https://localhost:4200"   // Angular dev server HTTPS
+                   // )
+                    .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod());
             });
+
+            //builder.WebHost.ConfigureKestrel(options =>
+            //{
+            //    options.ListenLocalhost(5097, o => o.Protocols = HttpProtocols.Http1AndHttp2); // HTTP
+            //    options.ListenLocalhost(7097, o =>
+            //    {
+            //        o.Protocols = HttpProtocols.Http1AndHttp2; // Hỗ trợ cả 2
+            //        o.UseHttps(); // HTTPS
+            //    });
+            //});
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -70,12 +82,11 @@ namespace WebApi
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapControllers();
             app.UseFastEndpoints();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
                 app.UseSwaggerGen();
-
-            app.MapControllers();
 
             app.MapGrpcService<VideoServiceGrpc>();
             app.MapGet("/", () => "GRPC OK");

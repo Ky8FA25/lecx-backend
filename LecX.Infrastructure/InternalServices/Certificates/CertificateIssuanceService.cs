@@ -216,12 +216,12 @@ namespace LecX.Infrastructure.InternalServices.Certificates
                 })
                 .FirstOrDefaultAsync(ct);
 
-            // 4️⃣ Check đủ bài
-            if ((assignmentData?.Count ?? 0) < totalAssignments || (testData?.Count ?? 0) < totalTests)
-            {
-                logger?.LogInformation("Student has missing assignments or tests: StudentId={StudentId}, CourseId={CourseId}", studentId, courseId);
-                return false;
-            }
+            //// 4️⃣ Check đủ bài
+            //if ((assignmentData?.Count ?? 0) < totalAssignments || (testData?.Count ?? 0) < totalTests)
+            //{
+            //    logger?.LogInformation("Student has missing assignments or tests: StudentId={StudentId}, CourseId={CourseId}", studentId, courseId);
+            //    return false;
+            //}
 
             // 5️⃣ Check điểm 0
             if ((assignmentData?.HasZero ?? false) || (testData?.HasZero ?? false))
@@ -238,7 +238,7 @@ namespace LecX.Infrastructure.InternalServices.Certificates
             logger?.LogInformation("Average score: StudentId={StudentId}, CourseId={CourseId}, AvgScore={Average}",
                 studentId, courseId, average);
 
-            return average >= 5;
+            return average >= 2;
         }
     }
 }

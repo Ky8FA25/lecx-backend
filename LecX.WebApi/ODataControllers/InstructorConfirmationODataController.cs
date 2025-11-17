@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using LecX.Application.Common.Dtos;
 using LecX.Application.Abstractions.Persistence;
+using LecX.Application.Common.Dtos;
 using LecX.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace LecX.WebApi.ODataControllers
@@ -13,7 +14,9 @@ namespace LecX.WebApi.ODataControllers
         protected override IQueryable<InstructorConfirmation> Query()
         {
             return _db.Set<InstructorConfirmation>()
-                .Include(r => r.User);
+                .Include(ic => ic.User)
+                .Where(ic => !_db.Set<Instructor>()
+                    .Any(i => i.User.Id == ic.UserId));
         }
     }
 }

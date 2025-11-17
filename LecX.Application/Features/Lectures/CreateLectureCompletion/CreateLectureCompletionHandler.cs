@@ -82,7 +82,7 @@ namespace LecX.Application.Features.Lectures.CreateLectureCompletion
                 studentCourse.Progress = newProgress;
                 await db.SaveChangesAsync(ct);
 
-                if (oldProgress < 100 && newProgress >= 100)
+                if (newProgress >= 100)
                 {
                     await queue.EnqueueAsync(studentCourse.StudentId, studentCourse.CourseId);
                 }

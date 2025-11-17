@@ -3,13 +3,17 @@ using LecX.Application.Abstractions.Persistence;
 using LecX.Application.Features.InstructorConfirmations.Common;
 using LecX.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace LecX.Application.Features.InstructorConfirmations.ApproveInstructorConfirmation
 {
     public sealed class ApproveInstructorConfirmationHandler(
         IAppDbContext db,
-        IMapper mapper) : IRequestHandler<ApproveInstructorConfirmationRequest, ApproveInstructorConfirmationResponse>
+        IMapper mapper,
+        UserManager<User> userManager,
+        RoleManager<IdentityRole> roleManager
+    ) : IRequestHandler<ApproveInstructorConfirmationRequest, ApproveInstructorConfirmationResponse>
     {
         public async Task<ApproveInstructorConfirmationResponse> Handle(
             ApproveInstructorConfirmationRequest request,
@@ -42,6 +46,26 @@ namespace LecX.Application.Features.InstructorConfirmations.ApproveInstructorCon
             };
 
             await db.Set<Instructor>().AddAsync(instructor, cancellationToken);
+
+            var instructorRoleExists = await roleManager.RoleExistsAsync("Instructor");
+            if (!instructorRoleExists)
+            {
+                await roleManager.CreateAsync(new IdentityRole("Instructor"));
+            }
+
+            var user = confirmation.User;
+
+            // Lấy role hiện tại
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            // Nếu user đang có role khác, remove hết
+            foreach (var role in userRoles)
+            {
+                await userManager.RemoveFromRoleAsync(user, role);
+            }
+
+            // Add role mới "Instructor"
+            await userManager.AddToRoleAsync(user, "Instructor");
 
             try
             {

@@ -23,7 +23,7 @@ namespace LecX.WebApi.ODataControllers
             _mapper = mapper;
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         [EnableQuery(PageSize = 50)]
         public async Task<List<UserODataDto>> Get()
         {

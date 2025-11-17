@@ -23,6 +23,9 @@ public static class ODataMinimal
         var studentCourse = builder.EntitySet<StudentCourseODataDto>("StudentCourseOData").EntityType;
         studentCourse.HasKey(u => u.StudentCourseId);
 
+        var instructorConfirmation = builder.EntitySet<InstructorConfirmationODataDto>("InstructorConfirmationOData").EntityType;
+        instructorConfirmation.HasKey(u => u.ConfirmationId);
+
         var payment = builder.EntitySet<PaymentODataDto>("PaymentOData").EntityType;
         payment.HasKey(u => u.PaymentId);
 

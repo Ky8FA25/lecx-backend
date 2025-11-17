@@ -29,7 +29,7 @@ namespace LecX.WebApi.ODataControllers
         protected virtual IQueryable<TEntity> Query()
             => _db.Set<TEntity>();
 
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         [EnableQuery(PageSize = 50, MaxExpansionDepth = 2)]
         public virtual async Task<List<TDto>> Get()
             => await Query()
